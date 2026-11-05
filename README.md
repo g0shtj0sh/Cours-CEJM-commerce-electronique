@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cours CEJM — Commerce électronique
 
-## Getting Started
+Site vitrine d'un produit, avec objet 3D interactif, doublé d'un volet
+pédagogique sur le commerce électronique (cadre juridique, modèles
+d'affaires, données personnelles).
 
-First, run the development server:
+Le produit présenté — **Timbre 03**, une radio portable — est fictif.
+Aucune vente n'est proposée et le bloc de commande ne traite aucun
+paiement : il sert à illustrer la règle du « double clic ».
+
+## Stack
+
+| Couche | Choix |
+| --- | --- |
+| Framework | Next.js 16 (App Router, Turbopack), TypeScript |
+| Styles | Tailwind CSS v4, tokens déclarés dans `globals.css` |
+| 3D | React Three Fiber 9, drei, postprocessing (bloom) |
+| Animation | Motion (wordmark), Lenis (défilement lissé) |
+| Hébergement | Vercel |
+
+## Démarrer
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Puis <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Autres commandes : `npm run build`, `npm run lint`, `npx tsc --noEmit`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Organisation
 
-## Learn More
+```
+src/
+  app/
+    globals.css          système de design (couleurs, type, filets)
+    layout.tsx           police Archivo, défilement lissé
+    page.tsx             composition de la page
+  content/
+    product.ts           fiche produit — tout le site lit ce fichier
+    cejm.ts              contenu du cours
+  components/
+    three/
+      ProductStage.tsx   Canvas, éclairage, cadrage, bloom
+      ProductModel.tsx   chargement du .glb, finitions, animation d'entrée
+    sections/            Hero, Specs, NightPanel, Cejm, Order
+public/
+  models/radio.glb       modèle 3D optimisé (190 Ko)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Changer de produit
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Tout passe par `src/content/product.ts` : nom, prix, fiche technique,
+finitions et chemin du modèle. Aucun composant ne contient de donnée
+produit en dur.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Pour remplacer le modèle 3D, déposer un `.glb` dans `public/models/`,
+mettre à jour `model.src`, puis ajuster `model.scale` (le cadrage de la
+caméra, lui, s'adapte tout seul à la forme du conteneur).
 
-## Deploy on Vercel
+Un modèle brut pèse souvent plusieurs mégaoctets. Pour l'alléger :
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npx @gltf-transform/cli optimize entree.glb public/models/radio.glb --texture-compress webp --texture-size 1024 --compress meshopt
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+C'est ce qui a ramené le modèle actuel de 10,6 Mo à 190 Ko, textures PBR
+comprises.
+
+## Parti pris de design
+
+Référence visuelle : une façade d'ampli hi-fi sérigraphiée. Aucun
+arrondi, aucune ombre portée — la profondeur vient de filets d'un pixel
+et du contraste de valeur. Une seule famille typographique, Archivo,
+exploitée sur son axe de largeur : très large pour le wordmark, normale
+pour le texte, condensée pour les données techniques. Le seul élément
+aux formes souples de la page est l'objet 3D.
+
+## Crédits
+
+Modèle 3D [Boom Box](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/BoomBox)
+par Microsoft, [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+(domaine public).
