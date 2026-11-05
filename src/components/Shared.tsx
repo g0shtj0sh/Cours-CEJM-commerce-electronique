@@ -20,6 +20,9 @@ export function Surface({ fixed }: { fixed?: boolean }) {
     <>
       <div aria-hidden className={`surface ${position} inset-0`} />
       <div aria-hidden className={`dots ${position} inset-0`} />
+      <div aria-hidden className={`${position} inset-0 overflow-hidden`}>
+        <div className="cursor-glow" />
+      </div>
     </>
   );
 }
