@@ -12,8 +12,9 @@ import {
   WatchImage,
   ambientStyle,
 } from "@/components/Shared";
+import { accroche } from "@/content/catalogue";
 import type { ShopModel } from "@/lib/catalogue.server";
-import { useT } from "@/lib/settings";
+import { usePrice, useSettings, useT } from "@/lib/settings";
 
 /** Accueil : un carrousel dont l'ambiance suit le modèle affiché. */
 export default function HomeHero({
@@ -24,6 +25,8 @@ export default function HomeHero({
   children: React.ReactNode;
 }) {
   const t = useT();
+  const { lang } = useSettings();
+  const price = usePrice();
   const [index, setIndex] = useState(0);
   const model = models[index];
   const previous = models[(index - 1 + models.length) % models.length];
@@ -60,6 +63,14 @@ export default function HomeHero({
             <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)]">
               {model.name}
             </h1>
+            <p className="mt-4 max-w-[17rem] text-[0.9375rem] leading-snug text-ink/80">
+              {accroche(model, lang)}
+            </p>
+            <p className="mt-2 text-sm font-semibold text-accent tabular-nums">
+              {price.isUsd
+                ? `${price.usd(model.priceCents)} (${price.eur(model.priceCents)} ${t.common.vat})`
+                : `${price.eur(model.priceCents)} ${t.common.vat}`}
+            </p>
           </div>
 
           <div className="relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-20 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">

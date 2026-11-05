@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import ProductView from "@/components/ProductView";
-import { euros } from "@/content/catalogue";
+import { accroche, euros } from "@/content/catalogue";
 import { shopModels } from "@/lib/catalogue.server";
 
 /** Page générée d'avance pour chaque modèle : pas d'état de chargement. */
@@ -22,9 +22,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const model = readyModels().find((item) => item.slug === slug);
   if (!model) return {};
+  const title = `${model.name} | POINT`;
+  const description = `${accroche(model, "fr")}. ${euros(model.priceCents)} TTC, livraison incluse.`;
+  const images = [{ url: `/images/${model.slug}.webp`, alt: `Montre ${model.name}` }];
   return {
     title: model.name,
-    description: `${model.name}, montre numérique à écran matriciel. ${euros(model.priceCents)} TTC, livraison incluse.`,
+    description,
+    openGraph: { title, description, images, siteName: "POINT", locale: "fr_FR", type: "website" },
+    twitter: { card: "summary_large_image", title, description, images },
   };
 }
 

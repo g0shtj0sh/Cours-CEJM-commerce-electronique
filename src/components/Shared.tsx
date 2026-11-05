@@ -39,13 +39,13 @@ export function PriceTag({ cents }: { cents: number }) {
   const price = usePrice();
   if (!price.isUsd) {
     return (
-      <span className="whitespace-nowrap">
+      <span className="whitespace-nowrap tabular-nums">
         {price.eur(cents)} {t.common.vat}
       </span>
     );
   }
   return (
-    <span className="text-right whitespace-nowrap">
+    <span className="text-right whitespace-nowrap tabular-nums">
       {price.usd(cents)}
       <span className="block text-muted">
         {price.eur(cents)} {t.common.vat}
@@ -108,7 +108,7 @@ export function Ruler({
             onClick={() => onSelect(index)}
             className={[
               "min-h-6 min-w-6 px-0.5 text-[0.6875rem] font-bold",
-              index === active ? "text-ink" : "text-dim hover:text-ink",
+              index === active ? "text-ink" : "text-muted hover:text-ink",
             ].join(" ")}
           >
             {String(index + 1).padStart(2, "0")}

@@ -31,7 +31,7 @@ export default function HomeStories({
             fill
             decoding="sync"
             sizes="(min-width: 768px) 30vw, 90vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className="object-cover transition-opacity duration-200 group-hover:opacity-85"
           />
           <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
           <span className="absolute inset-x-5 bottom-4 block lg:inset-x-6 lg:bottom-5">

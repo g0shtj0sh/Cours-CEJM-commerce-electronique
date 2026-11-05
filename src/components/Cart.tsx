@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { CloseIcon, PhoneIcon, ShieldIcon } from "@/components/Icons";
+import Select from "@/components/Select";
 import { SeriesBadge, WatchImage, ambientStyle } from "@/components/Shared";
-import { findModel, strapSizes, tvaCents } from "@/content/catalogue";
+import { SERIE_RARE, findModel, strapSizes, tvaCents } from "@/content/catalogue";
 import { garantie, vendeur } from "@/content/vendeur";
 import { usePrice, useSettings, useT } from "@/lib/settings";
 import { useCart } from "@/lib/stores";
@@ -38,7 +39,7 @@ export default function Cart() {
             {items.map(({ line, model }) => (
               <article key={line.id} className="card relative min-w-0" style={ambientStyle(model)}>
                 <div className="flex items-center justify-between gap-2 p-4 pb-0 sm:p-5 sm:pb-0">
-                  <SeriesBadge serie={model.serie} />
+                  {model.serie <= SERIE_RARE ? <SeriesBadge serie={model.serie} /> : <span />}
                   <button
                     type="button"
                     aria-label={`${t.cart.removeItem} ${model.name}`}
@@ -57,28 +58,22 @@ export default function Cart() {
                   <dl className="mt-6 grid gap-4 break-words hyphens-auto sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                     <div>
                       <dt className="label text-muted">{t.cart.strap}</dt>
-                      <dd className="label mt-1">{model.bracelet[lang]}</dd>
+                      <dd className="mt-1 text-sm">{model.bracelet[lang]}</dd>
                     </div>
                     <div>
                       <dt className="label text-muted">{t.cart.clasp}</dt>
-                      <dd className="label mt-1">{model.fermoir[lang]}</dd>
+                      <dd className="mt-1 text-sm">{model.fermoir[lang]}</dd>
                     </div>
                   </dl>
-                  <label className="mt-5 block max-w-44">
-                    <span className="label text-muted">{t.cart.strapSize}</span>
-                    <select
-                      className="field mt-1.5"
+                  <div className="mt-5 max-w-44">
+                    <Select
+                      label={t.cart.strapSize}
                       value={line.strapSize}
-                      onChange={(event) => setStrapSize(line.id, event.target.value)}
-                    >
-                      {strapSizes.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <p className="mt-5 font-semibold text-accent">
+                      options={strapSizes}
+                      onChange={(size) => setStrapSize(line.id, size)}
+                    />
+                  </div>
+                  <p className="mt-5 font-semibold text-accent tabular-nums">
                     {price.eur(model.priceCents)} {t.common.vat}
                   </p>
                 </div>
@@ -90,7 +85,7 @@ export default function Cart() {
             <Link href="/garantie" className="label flex items-center gap-3 text-muted hover:text-ink lg:justify-end">
               <ShieldIcon /> {t.cart.warranty} {warranty}
             </Link>
-            <dl className="mt-10 space-y-4">
+            <dl className="mt-10 space-y-4 tabular-nums">
               <div className="flex justify-between gap-4 text-sm text-muted">
                 <dt>{t.cart.vat}</dt>
                 <dd>{price.eur(tva)}</dd>

@@ -112,12 +112,15 @@ export default function Checkout() {
     <main className="pad relative pt-10 pb-14">
       <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.checkout.title}</h1>
 
-      <ol className="mt-7 flex flex-wrap gap-2.5">
+      <ol className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-b border-line">
         {stepIds.map((id, index) => (
           <li
             key={id}
             aria-current={id === step ? "step" : undefined}
-            className={["pill label", id === step ? "text-accent" : "text-muted"].join(" ")}
+            className={[
+              "label -mb-px border-b-2 pb-3",
+              id === step ? "border-[var(--accent)] text-ink" : "border-transparent text-muted",
+            ].join(" ")}
           >
             {index + 1}. {t.checkout.steps[id]}
           </li>
@@ -310,11 +313,11 @@ export default function Checkout() {
                     {item.ref}, {t.checkout.strap} {item.strapSize}
                   </span>
                 </span>
-                <span className="whitespace-nowrap">{price.eur(item.priceCents)}</span>
+                <span className="whitespace-nowrap tabular-nums">{price.eur(item.priceCents)}</span>
               </li>
             ))}
           </ul>
-          <dl className="mt-5 space-y-2 border-t border-line pt-4 text-sm">
+          <dl className="mt-5 space-y-2 border-t border-line pt-4 text-sm tabular-nums">
             <div className="flex justify-between gap-4 text-muted">
               <dt>{t.checkout.vat}</dt>
               <dd>{price.eur(tva)}</dd>

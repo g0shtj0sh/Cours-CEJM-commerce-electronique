@@ -567,6 +567,26 @@ export const catalogue: readonly Model[] = [
   },
 ];
 
+/** En dessous de ce nombre de pièces, la série limitée est signalée sur les cartes. */
+export const SERIE_RARE = 100;
+
+/** Ce qu'est la montre, en une ligne, par modèle. Doit rester vrai pour chaque variante. */
+const ACCROCHES: Record<string, Text> = {
+  prisme: t("Montre numérique carrée en polycarbonate", "Square digital watch in polycarbonate"),
+  bastion: t("Montre numérique octogonale, étanche à 10 ATM", "Octagonal digital watch, water resistant to 10 ATM"),
+  "rond-maille": t("Montre numérique ronde à maille milanaise", "Round digital watch on a Milanese mesh"),
+  meridien: t("Montre à aiguilles dessinées en points lumineux", "Watch with hands drawn in lit dots"),
+  "rond-orbite": t("Montre numérique à anneaux de points lumineux", "Digital watch with rings of lit dots"),
+  "octo-orange": t("Montre numérique en titane, avec boussole", "Titanium digital watch with a compass"),
+  "ligne-cobalt": t("Montre fine qui affiche votre rythme cardiaque", "Slim watch that shows your heart rate"),
+  "ligne-cristal": t("Montre numérique fine et transparente", "Slim, clear digital watch"),
+  parcours: t("Montre où un point orange traverse votre journée", "Watch where an orange dot crosses your day"),
+};
+
+export function accroche(model: Model, lang: Lang): string {
+  return ACCROCHES[model.groupe ?? model.slug][lang];
+}
+
 /** Modèle affiché en premier sur l'accueil. */
 export const VEDETTE = "carre-noir";
 

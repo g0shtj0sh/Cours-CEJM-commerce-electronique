@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { PriceTag, SeriesBadge, WatchImage, ambientStyle } from "@/components/Shared";
+import { SERIE_RARE } from "@/content/catalogue";
 import type { ShopModel } from "@/lib/catalogue.server";
 import { useT } from "@/lib/settings";
 
@@ -10,8 +11,8 @@ export default function ProductCard({ model }: { model: ShopModel }) {
   const t = useT();
   const body = (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-2 p-4 pb-0 sm:p-5 sm:pb-0">
-        <SeriesBadge serie={model.serie} muted={!model.ready} />
+      <div className="flex min-h-14 flex-wrap items-center justify-between gap-2 p-4 pb-0 sm:min-h-[3.75rem] sm:p-5 sm:pb-0">
+        {model.serie <= SERIE_RARE ? <SeriesBadge serie={model.serie} muted={!model.ready} /> : <span />}
         {model.ready && model.stock === 0 ? (
           <p className="label text-muted">{t.common.soldOut}</p>
         ) : null}

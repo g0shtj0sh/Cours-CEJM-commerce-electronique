@@ -166,8 +166,8 @@ export default function Collection({ models }: { models: ShopModel[] }) {
                 >
                   <span
                     className={[
-                      "rounded-full transition-all",
-                      material === item.id ? "size-9" : "size-5",
+                      "size-8 rounded-full transition-transform duration-150",
+                      material === item.id ? "scale-110" : "scale-[0.625]",
                     ].join(" ")}
                     style={{ backgroundColor: item.color }}
                   />

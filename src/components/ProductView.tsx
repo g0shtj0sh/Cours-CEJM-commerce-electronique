@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DocumentIcon, HeartIcon, ShareIcon } from "@/components/Icons";
 import Header from "@/components/Header";
+import Select from "@/components/Select";
 import {
   SeriesBadge,
   Surface,
@@ -13,6 +14,7 @@ import {
 } from "@/components/Shared";
 import Tip from "@/components/Tip";
 import {
+  accroche,
   colorways,
   descriptif,
   specs,
@@ -60,7 +62,6 @@ export default function ProductView({
     .slice(0, 3);
 
   const text = descriptif(model, lang);
-  const firstStop = text.indexOf(". ") + 1;
 
   const buy = () => {
     add(model.slug, strapSize);
@@ -106,7 +107,7 @@ export default function ProductView({
 
               <div className="relative z-10 flex flex-wrap items-end justify-between gap-6 lg:mt-auto">
                 <div className="lg:mt-8 lg:max-w-[17rem]">
-                  <p className="text-lg font-semibold text-accent">
+                  <p className="text-lg font-semibold text-accent tabular-nums">
                     {price.isUsd
                       ? price.usd(model.priceCents)
                       : `${price.eur(model.priceCents)} ${t.common.vat}`}
@@ -150,20 +151,14 @@ export default function ProductView({
                     </div>
                   </div>
 
-                  <label className="mt-4 block w-44">
-                    <span className="label text-muted">{t.product.strapSize}</span>
-                    <select
-                      className="field mt-1.5"
+                  <div className="mt-4 w-44">
+                    <Select
+                      label={t.product.strapSize}
                       value={strapSize}
-                      onChange={(event) => setStrapSize(event.target.value)}
-                    >
-                      {strapSizes.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                      options={strapSizes}
+                      onChange={setStrapSize}
+                    />
+                  </div>
                   <button
                     type="button"
                     disabled={!available}
@@ -206,14 +201,14 @@ export default function ProductView({
         </section>
 
         <section className="surface pad relative -mt-8 grid gap-8 rounded-b-panel pt-16 pb-9 lg:grid-cols-2">
-          <div className="fade-out max-h-32 overflow-hidden">
+          <div>
             <p className="label">
               {model.name} <span className="ml-1 text-muted">{model.ref}</span>
             </p>
-            <p className="mt-4 text-sm leading-relaxed font-semibold">
-              {text.slice(0, firstStop)}
-            </p>
-            <p className="text-sm leading-relaxed text-muted">{text.slice(firstStop)}</p>
+            <p className="mt-4 text-sm leading-relaxed font-semibold">{accroche(model, lang)}</p>
+            <a className="link mt-2 inline-block text-sm" href="#fiche">
+              {t.product.readDescription}
+            </a>
           </div>
 
           {suggestions.length > 0 ? (

@@ -19,10 +19,21 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const SITE_DESCRIPTION =
+  "Montres numériques à écran matriciel, en séries limitées. Prix TTC, livraison incluse, 14 jours pour changer d'avis.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://cours-cejm-commerce-electronique.vercel.app"),
   title: { default: "POINT — Montres numériques", template: "%s | POINT" },
-  description:
-    "Montres numériques à écran matriciel, en séries limitées. Prix TTC, livraison incluse, 14 jours pour changer d'avis.",
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: "POINT — Montres numériques",
+    description: SITE_DESCRIPTION,
+    siteName: "POINT",
+    locale: "fr_FR",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {

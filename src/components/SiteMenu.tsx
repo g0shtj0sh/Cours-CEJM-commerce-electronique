@@ -121,7 +121,7 @@ export default function SiteMenu() {
                             <span
                               aria-hidden
                               className={[
-                                "size-3 shrink-0 rounded-full bg-[#ff8a3d] transition-all duration-200",
+                                "size-3 shrink-0 rounded-full bg-[#ff8a3d] transition-[opacity,transform] duration-200",
                                 active === index ? "opacity-100" : "scale-50 opacity-0",
                               ].join(" ")}
                             />
