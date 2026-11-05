@@ -21,7 +21,7 @@ export function precontractuel(totalCents: number) {
     ["Livraison", `${transporteur}, en ${zone}, sous ${delai}.`],
     [
       "Rétractation",
-      "14 jours à compter de la réception, sans motif et sans pénalité. Le retour est à notre charge.",
+      "14 jours à compter de la réception, sans motif et sans pénalité. Le retour est à notre charge. Remboursement au plus tard 14 jours après votre demande.",
     ],
     [
       "Garanties",
@@ -44,11 +44,19 @@ export const exceptionsRetractation = [
 export const cgv = [
   [
     "Objet et champ d'application",
-    "Les présentes conditions régissent la vente en ligne des montres POINT par POINT SAS à des consommateurs, c'est-à-dire des personnes physiques qui achètent à un vendeur professionnel à des fins étrangères à leur activité professionnelle. Le site est proposé en français et les livraisons sont limitées à la France métropolitaine : le droit français s'applique.",
+    "Les présentes conditions régissent la vente en ligne des montres POINT par POINT SAS à des consommateurs, c'est-à-dire des personnes physiques qui achètent à un vendeur professionnel à des fins étrangères à leur activité professionnelle. Le site est proposé en français et, par courtoisie, en anglais. Les livraisons sont limitées à la France métropolitaine : le droit français s'applique, quelle que soit la langue choisie.",
+  ],
+  [
+    "Capacité",
+    "Pour commander, le client déclare être majeur et capable de contracter, ou agir avec l'accord de ses représentants légaux.",
   ],
   [
     "Langue et devise",
     "Le contrat est conclu en français : la version anglaise du site est une traduction de courtoisie et la version française fait foi. Les prix en dollars sont indicatifs, au taux fixe de 1 euro pour 1,10 dollar. Seul le prix en euros est facturé.",
+  ],
+  [
+    "Produit",
+    "Les montres POINT sont des produits licites, en vente libre en France, portant le marquage CE. Leurs caractéristiques essentielles figurent sur chaque fiche produit.",
   ],
   [
     "Offre",
@@ -56,7 +64,7 @@ export const cgv = [
   ],
   [
     "Formation du contrat",
-    "Le client vérifie le détail de sa commande et son prix total, peut corriger ses erreurs, puis confirme en cliquant sur « Commander avec obligation de paiement ». POINT SAS accuse réception de la commande sans délai injustifié et en adresse la confirmation sur support durable.",
+    "Le contrat se forme en deux clics. Premier clic : le client demande à vérifier sa commande, voit son détail et son prix total, et peut corriger ses erreurs. Second clic : il confirme en cliquant sur « Commander avec obligation de paiement », après avoir accepté les présentes conditions. POINT SAS accuse réception de la commande sans délai injustifié et en adresse la confirmation sur support durable.",
   ],
   [
     "Prix",
@@ -72,7 +80,7 @@ export const cgv = [
   ],
   [
     "Droit de rétractation",
-    "Le client dispose de 14 jours à compter de la réception pour se rétracter, sans motif ni pénalité, à l'aide du formulaire type ou de toute déclaration dénuée d'ambiguïté. Il renvoie la montre dans les 14 jours suivant sa décision, aux frais de POINT SAS. Le remboursement intervient au plus tard 14 jours après que POINT SAS a été informée de la rétractation, par le même moyen de paiement sauf accord contraire. Il peut être différé jusqu'à la récupération du bien ou la preuve de son expédition.",
+    "La vente ayant lieu à distance, le client dispose de 14 jours à compter de la réception pour se rétracter, sans motif ni pénalité, à l'aide du formulaire type ou de toute déclaration dénuée d'ambiguïté. Il renvoie la montre dans les 14 jours suivant sa décision, aux frais de POINT SAS. Le remboursement intervient au plus tard 14 jours après que POINT SAS a été informée de la rétractation, par le même moyen de paiement sauf accord contraire. Il peut être différé jusqu'à la récupération du bien ou la preuve de son expédition.",
   ],
   [
     "Garantie commerciale",
@@ -115,7 +123,7 @@ export const proprieteIndustrielle = [
     titre: "Marque POINT®",
     numero: "Dépôt INPI n° 26 5 000 001",
     texte:
-      "Enregistrée en France pour les montres (classe 14) et la vente en ligne (classe 35), pour 10 ans renouvelables sans limite. Le nom est distinctif : il ne désigne ni le produit ni l'une de ses caractéristiques essentielles. Seuls ces produits et services sont protégés.",
+      "Enregistrée en France pour les montres (classe 14) et la vente en ligne (classe 35), pour 10 ans renouvelables sans limite. Le nom est distinctif : il ne désigne ni le produit ni l'une de ses caractéristiques essentielles. Le dépôt à l'INPI a suivi une recherche d'antériorités, pour vérifier que le nom était libre. Le symbole ® signale une marque enregistrée. Seuls ces produits et services sont protégés.",
   },
   {
     titre: "Brevet d'invention",

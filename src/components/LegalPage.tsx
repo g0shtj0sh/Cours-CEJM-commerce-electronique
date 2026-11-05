@@ -29,7 +29,7 @@ export default function LegalPage({
         <Surface />
         <div className="relative">
           <Header active={active} />
-          <main className="pad pt-10 pb-16">
+          <main className="pad rise pt-10 pb-16">
             <h1 className="matrix text-[clamp(2.25rem,4.5vw,3.75rem)]">{title}</h1>
             {columns ? (
               <div className="mt-10 lg:columns-2 lg:gap-14 2xl:columns-3 [&>*]:mb-10 [&>*]:break-inside-avoid">

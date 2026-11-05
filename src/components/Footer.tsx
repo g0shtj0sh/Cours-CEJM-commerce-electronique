@@ -16,7 +16,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="pad bg-night py-12 text-sm">
+    <footer className="pad relative bg-night py-12 text-sm">
       <div className="grid gap-10 md:grid-cols-3">
         <div>
           <p className="matrix text-2xl">POINT</p>

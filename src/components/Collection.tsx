@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import Header from "@/components/Header";
 import { SearchIcon } from "@/components/Icons";
 import ProductCard from "@/components/ProductCard";
 import Tip from "@/components/Tip";
@@ -71,8 +72,12 @@ function ParcoursBanner() {
 function CardRow({ models }: { models: ShopModel[] }) {
   return (
     <div className="rail -mr-[var(--pad)] mt-6 flex snap-x gap-4 overflow-x-auto pr-[var(--pad)] pb-5 sm:gap-6">
-      {models.map((model) => (
-        <div key={model.slug} className="w-[85%] shrink-0 snap-start md:w-[46%] lg:w-[31%]">
+      {models.map((model, index) => (
+        <div
+          key={model.slug}
+          style={{ "--i": Math.min(index, 4) + 1 } as React.CSSProperties}
+          className="rise w-[85%] shrink-0 snap-start md:w-[46%] lg:w-[31%]"
+        >
           <ProductCard model={model} />
         </div>
       ))}
@@ -101,121 +106,127 @@ export default function Collection({ models }: { models: ShopModel[] }) {
   }, [models, shape, size, material, search]);
 
   return (
-    <main className="pad relative pt-8 pb-16">
-      <h1 className="sr-only">{t.collection.title}</h1>
+    <>
+      <div className="pin z-30">
+        <div aria-hidden className="pin-veil" />
+        <Header active="montres" />
+        <div className="pad rise relative flex flex-wrap items-end gap-x-14 gap-y-6 pt-8 pb-5">
+          <div>
+            <FilterLabel name={t.collection.shape} value={shape ? t.collection.shapes[shape] : undefined} />
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {shapes.map((item) => (
+                <Tip key={item.id} label={t.collection.shapes[item.id]}>
+                  <button
+                    type="button"
+                    aria-label={t.collection.shapes[item.id]}
+                    aria-pressed={shape === item.id}
+                    onClick={() => setShape(shape === item.id ? null : item.id)}
+                    className={[
+                      "flex size-10 items-center justify-center rounded-full transition-colors",
+                      shape === item.id ? "bg-[var(--accent)] text-night" : "bg-white/10 text-ink",
+                    ].join(" ")}
+                  >
+                    <svg viewBox="5 5 14 14" className="size-5" fill="currentColor" aria-hidden>
+                      {item.path}
+                    </svg>
+                  </button>
+                </Tip>
+              ))}
+            </div>
+          </div>
 
-      <div className="flex flex-wrap items-end gap-x-14 gap-y-6">
-        <div>
-          <FilterLabel name={t.collection.shape} value={shape ? t.collection.shapes[shape] : undefined} />
-          <div className="mt-3 flex flex-wrap gap-2.5">
-            {shapes.map((item) => (
-              <Tip key={item.id} label={t.collection.shapes[item.id]}>
+          <div>
+            <FilterLabel name={t.collection.size} value={size ? `${size} mm` : undefined} />
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {sizes.map((item) => (
                 <button
+                  key={item}
                   type="button"
-                  aria-label={t.collection.shapes[item.id]}
-                  aria-pressed={shape === item.id}
-                  onClick={() => setShape(shape === item.id ? null : item.id)}
+                  aria-label={`${item} ${t.collection.millimetres}`}
+                  aria-pressed={size === item}
+                  onClick={() => setSize(size === item ? null : item)}
                   className={[
-                    "flex size-10 items-center justify-center rounded-full transition-colors",
-                    shape === item.id ? "bg-[var(--accent)] text-night" : "bg-white/10 text-ink",
+                    "flex size-10 items-center justify-center rounded-full border border-dashed text-xs font-bold transition-colors",
+                    size === item
+                      ? "border-[var(--accent)] bg-[var(--accent)] text-night"
+                      : "border-dim bg-white/10",
                   ].join(" ")}
                 >
-                  <svg viewBox="5 5 14 14" className="size-5" fill="currentColor" aria-hidden>
-                    {item.path}
-                  </svg>
+                  {item}
                 </button>
-              </Tip>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <FilterLabel name={t.collection.size} value={size ? `${size} mm` : undefined} />
-          <div className="mt-3 flex flex-wrap gap-2.5">
-            {sizes.map((item) => (
+          <div>
+            <FilterLabel name={t.collection.strap} value={material ? matiereLabels[material][lang] : undefined} />
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {materials.map((item) => (
+                <Tip key={item.id} label={matiereLabels[item.id][lang]}>
+                  <button
+                    type="button"
+                    aria-label={matiereLabels[item.id][lang]}
+                    aria-pressed={material === item.id}
+                    onClick={() => setMaterial(material === item.id ? null : item.id)}
+                    className="flex size-10 items-center justify-center rounded-full bg-white/10"
+                  >
+                    <span
+                      className={[
+                        "size-8 rounded-full transition-transform duration-150",
+                        material === item.id ? "scale-110" : "scale-[0.625]",
+                      ].join(" ")}
+                      style={{ backgroundColor: item.color }}
+                    />
+                  </button>
+                </Tip>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 md:ml-auto">
+            {searching ? (
+              <input
+                autoFocus
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder={t.collection.searchPlaceholder}
+                aria-label={t.collection.searchLabel}
+                className="field w-48 rounded-full"
+              />
+            ) : null}
+            <Tip label={t.collection.search} side="bottom-end">
               <button
-                key={item}
                 type="button"
-                aria-label={`${item} ${t.collection.millimetres}`}
-                aria-pressed={size === item}
-                onClick={() => setSize(size === item ? null : item)}
-                className={[
-                  "flex size-10 items-center justify-center rounded-full border border-dashed text-xs font-bold transition-colors",
-                  size === item
-                    ? "border-[var(--accent)] bg-[var(--accent)] text-night"
-                    : "border-dim bg-white/10",
-                ].join(" ")}
+                aria-label={t.collection.search}
+                aria-expanded={searching}
+                onClick={() => setSearching((value) => !value)}
+                className="flex size-10 items-center justify-center rounded-full bg-white/10"
               >
-                {item}
+                <SearchIcon />
               </button>
-            ))}
+            </Tip>
           </div>
-        </div>
-
-        <div>
-          <FilterLabel name={t.collection.strap} value={material ? matiereLabels[material][lang] : undefined} />
-          <div className="mt-3 flex flex-wrap gap-2.5">
-            {materials.map((item) => (
-              <Tip key={item.id} label={matiereLabels[item.id][lang]}>
-                <button
-                  type="button"
-                  aria-label={matiereLabels[item.id][lang]}
-                  aria-pressed={material === item.id}
-                  onClick={() => setMaterial(material === item.id ? null : item.id)}
-                  className="flex size-10 items-center justify-center rounded-full bg-white/10"
-                >
-                  <span
-                    className={[
-                      "size-8 rounded-full transition-transform duration-150",
-                      material === item.id ? "scale-110" : "scale-[0.625]",
-                    ].join(" ")}
-                    style={{ backgroundColor: item.color }}
-                  />
-                </button>
-              </Tip>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2.5 md:ml-auto">
-          {searching ? (
-            <input
-              autoFocus
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder={t.collection.searchPlaceholder}
-              aria-label={t.collection.searchLabel}
-              className="field w-48 rounded-full"
-            />
-          ) : null}
-          <Tip label={t.collection.search} side="bottom-end">
-            <button
-              type="button"
-              aria-label={t.collection.search}
-              aria-expanded={searching}
-              onClick={() => setSearching((value) => !value)}
-              className="flex size-10 items-center justify-center rounded-full bg-white/10"
-            >
-              <SearchIcon />
-            </button>
-          </Tip>
         </div>
       </div>
 
-      {families.map((family) => {
-        const rows = visible.filter((model) => model.family === family.id);
-        if (rows.length === 0) return null;
-        return (
-          <section key={family.id} className="mt-14">
-            <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label[lang]}</h2>
-            {family.id === "parcours" ? <ParcoursBanner /> : null}
-            <CardRow models={rows} />
-          </section>
-        );
-      })}
+      <main className="pad relative pb-16">
+        <h1 className="sr-only">{t.collection.title}</h1>
 
-      {visible.length === 0 ? <p className="copy mt-14">{t.collection.noResult}</p> : null}
-    </main>
+        {families.map((family) => {
+          const rows = visible.filter((model) => model.family === family.id);
+          if (rows.length === 0) return null;
+          return (
+            <section key={family.id} className="mt-9 scroll-mt-52 first-of-type:mt-6 lg:mt-14">
+              <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label[lang]}</h2>
+              {family.id === "parcours" ? <ParcoursBanner /> : null}
+              <CardRow models={rows} />
+            </section>
+          );
+        })}
+
+        {visible.length === 0 ? <p className="copy mt-14">{t.collection.noResult}</p> : null}
+      </main>
+    </>
   );
 }

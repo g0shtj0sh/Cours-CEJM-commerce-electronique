@@ -2,18 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Header from "@/components/Header";
 import {
   ModelSwitcher,
   SeriesBadge,
   Surface,
+  Swap,
   WatchImage,
   ambientStyle,
 } from "@/components/Shared";
 import { accroche } from "@/content/catalogue";
 import type { ShopModel } from "@/lib/catalogue.server";
+import { EASE_OUT } from "@/lib/motion";
 import { usePrice, useSettings, useT } from "@/lib/settings";
 
 /** Accueil : un carrousel dont l'ambiance suit le modèle affiché. */
@@ -32,8 +34,16 @@ export default function HomeHero({
   const previous = models[(index - 1 + models.length) % models.length];
   const next = models[(index + 1) % models.length];
 
+  // Les montres voisines sont chargées d'avance : le passage de l'une à l'autre ne doit pas attendre le réseau.
+  useEffect(() => {
+    for (const { slug } of [previous, next]) {
+      const image = new window.Image();
+      image.src = `/images/${slug}.webp`;
+    }
+  }, [previous, next]);
+
   return (
-    <div className="relative overflow-hidden" style={ambientStyle(model)}>
+    <div className="tint relative overflow-hidden" style={ambientStyle(model)}>
       <AnimatePresence initial={false}>
         <motion.div
           key={model.slug}
@@ -51,37 +61,55 @@ export default function HomeHero({
         <Header />
 
         <main className="pad relative flex flex-col pt-6 pb-8 lg:min-h-[calc(100svh-12.5rem)] lg:pt-10">
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-            <SeriesBadge serie={model.serie} />
+          <div className="rise flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+            <Swap id={model.slug}>
+              <SeriesBadge serie={model.serie} />
+            </Swap>
             <p className="label text-accent">
               {model.stock > 0 ? t.common.available : t.common.soldOut}
             </p>
           </div>
 
-          <div className="relative z-10 mt-6 lg:mt-[clamp(2rem,9vh,5.5rem)]">
-            <p className="label text-muted">{model.ref}</p>
-            <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)]">
-              {model.name}
-            </h1>
-            <p className="mt-4 max-w-[17rem] text-[0.9375rem] leading-snug text-ink/80">
-              {accroche(model, lang)}
-            </p>
-            <p className="mt-2 text-sm font-semibold text-accent tabular-nums">
-              {price.isUsd
-                ? `${price.usd(model.priceCents)} (${price.eur(model.priceCents)} ${t.common.vat})`
-                : `${price.eur(model.priceCents)} ${t.common.vat}`}
-            </p>
+          <div className="rise relative z-10 mt-6 [--i:1] lg:mt-[clamp(2rem,9vh,5.5rem)]">
+            {/* Le titre sort vers la gauche et le suivant arrive de la droite, comme sur la maquette. */}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={model.slug}
+                initial={{ opacity: 0, x: 18 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -24, transition: { duration: 0.18, ease: "easeIn" } }}
+                transition={{ duration: 0.34, ease: EASE_OUT }}
+              >
+                <p className="label text-muted">{model.ref}</p>
+                <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)] lg:min-h-[2lh]">
+                  {model.name}
+                </h1>
+                <p className="mt-4 max-w-[17rem] text-[0.9375rem] leading-snug text-ink/80 lg:min-h-[2lh]">
+                  {accroche(model, lang)}
+                </p>
+                <p className="mt-2 text-sm font-semibold text-accent tabular-nums">
+                  {price.isUsd
+                    ? `${price.usd(model.priceCents)} (${price.eur(model.priceCents)} ${t.common.vat})`
+                    : `${price.eur(model.priceCents)} ${t.common.vat}`}
+                </p>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          <div className="relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-20 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
+          <div className="rise-blur relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-20 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={model.slug}
                 className="absolute inset-0"
-                initial={{ opacity: 0, filter: "blur(18px)", scale: 0.96 }}
+                initial={{ opacity: 0, filter: "blur(22px)", scale: 0.965 }}
                 animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                exit={{ opacity: 0, filter: "blur(18px)", scale: 0.98 }}
-                transition={{ duration: 0.35 }}
+                exit={{
+                  opacity: 0,
+                  filter: "blur(22px)",
+                  scale: 0.985,
+                  transition: { duration: 0.22, ease: "easeIn" },
+                }}
+                transition={{ duration: 0.46, ease: EASE_OUT }}
               >
                 <WatchImage
                   slug={model.slug}
@@ -93,30 +121,34 @@ export default function HomeHero({
             </AnimatePresence>
           </div>
 
-          <div className="relative z-10 flex items-end justify-between gap-6 lg:mt-7 lg:flex-1 lg:items-start">
+          <div className="rise relative z-10 flex items-end justify-between gap-6 [--i:2] lg:mt-7 lg:flex-1 lg:items-start">
             <Link href={`/montres/${model.slug}`} className="button">
               {t.common.discover}
             </Link>
 
-            {model.hasScene ? (
-              <Link
-                href={`/montres/${model.slug}`}
-                aria-label={`${t.common.seeCloser} : ${model.name}`}
-                className="relative hidden aspect-[3/2] w-[clamp(9rem,14vw,12.5rem)] overflow-hidden rounded-2xl lg:block"
-              >
-                <Image
-                  src={`/images/${model.slug}-scene.webp`}
-                  alt=""
-                  fill
-                  decoding="sync"
-                  sizes="14vw"
-                  className="object-cover"
-                />
-              </Link>
-            ) : null}
+            <div className="hidden aspect-[3/2] w-[clamp(9rem,14vw,12.5rem)] lg:block">
+              <Swap id={model.slug} className="size-full">
+                {model.hasScene ? (
+                  <Link
+                    href={`/montres/${model.slug}`}
+                    aria-label={`${t.common.seeCloser} : ${model.name}`}
+                    className="relative block size-full overflow-hidden rounded-2xl"
+                  >
+                    <Image
+                      src={`/images/${model.slug}-scene.webp`}
+                      alt=""
+                      fill
+                      decoding="sync"
+                      sizes="14vw"
+                      className="object-cover"
+                    />
+                  </Link>
+                ) : null}
+              </Swap>
+            </div>
           </div>
 
-          <div className="relative z-10 mt-8">
+          <div className="rise relative z-10 mt-8 [--i:3]">
             <ModelSwitcher
               count={models.length}
               active={index}
@@ -127,7 +159,7 @@ export default function HomeHero({
           </div>
         </main>
 
-        {children}
+        <div className="rise [--i:4]">{children}</div>
       </div>
     </div>
   );

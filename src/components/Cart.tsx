@@ -23,7 +23,7 @@ export default function Cart() {
   const warranty = lang === "en" ? "3 years" : garantie.commerciale;
 
   return (
-    <main className="pad relative pt-10 pb-14">
+    <main className="pad rise relative pt-10 pb-14">
       <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.cart.title}</h1>
 
       {items.length === 0 ? (

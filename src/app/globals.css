@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Déclarée pour que la couleur d'accent puisse glisser d'un modèle à l'autre. */
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #dca681;
+}
+
 /* ------------------------------------------------------------------ *
    POINT — structure de la maquette, écriture de Nothing.
    Fond noir teinté par la couleur d'ambiance du modèle affiché, trame
@@ -7,6 +14,7 @@
  * ------------------------------------------------------------------ */
 
 @theme {
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --color-night: #050403;
   --color-card: #12100f;
   --color-line: rgb(255 255 255 / 0.12);
@@ -181,7 +189,15 @@
     transition: background-color 220ms ease;
   }
   .card:hover {
-    background-color: rgb(var(--ambient) / 0.22);
+    background-color: rgb(var(--ambient) / 0.3);
+  }
+  .card img {
+    transition: scale 600ms var(--ease-soft);
+  }
+  @media (hover: hover) {
+    .card:hover img {
+      scale: 1.04;
+    }
   }
 
   .field {
@@ -206,6 +222,76 @@
 
   .text-accent {
     color: var(--accent);
+  }
+
+  /* Le contenu de chaque page arrive par étapes : --i fixe sa place dans la suite. */
+  .rise,
+  .rise-blur {
+    animation-delay: calc(90ms + var(--i, 0) * 70ms);
+    animation-fill-mode: backwards;
+    animation-timing-function: var(--ease-soft);
+  }
+  .rise {
+    animation-duration: 620ms;
+    animation-name: rise;
+  }
+  .rise-blur {
+    animation-duration: 760ms;
+    animation-name: rise-blur;
+  }
+  /* Au premier chargement, tout attend la fin du cadran. */
+  html:not([data-ready]) .rise,
+  html:not([data-ready]) .rise-blur,
+  html[data-nav="variant"] .rise {
+    animation: none;
+  }
+
+  .tint {
+    transition: --accent 600ms ease;
+  }
+
+  /* Collection : en-tête et filtres restent en haut, les montres défilent dessous. */
+  .pin {
+    position: relative;
+  }
+  .pin-veil {
+    display: none;
+  }
+  @media (min-width: 1024px) and (min-height: 700px) {
+    .pin {
+      position: sticky;
+      top: 0;
+    }
+    .pin-veil {
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      background: rgb(5 4 3 / 0.62);
+      bottom: -2.5rem;
+      display: block;
+      inset-inline: 0;
+      mask-image: linear-gradient(180deg, #000 calc(100% - 2.5rem), transparent);
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+    }
+    @supports (animation-timeline: scroll()) {
+      .pin-veil {
+        animation: veil linear both;
+        animation-range: 0 110px;
+        animation-timeline: scroll(root);
+      }
+    }
+  }
+
+  /* Règle du carrousel : les numéros glissent, l'actif reste au centre. */
+  .ruler {
+    --step: 3.25rem;
+    mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+  }
+  @media (min-width: 640px) {
+    .ruler {
+      --step: 3.75rem;
+    }
   }
 
   /* Cadran d'ouverture, repris de la transition de la vidéo. */
@@ -272,7 +358,102 @@
   }
 }
 
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes rise-blur {
+  from {
+    filter: blur(22px);
+    opacity: 0;
+    transform: scale(0.965);
+  }
+}
+@keyframes veil {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+   Changement de page, d'après la vidéo de référence : l'en-tête ne bouge
+   pas, la nouvelle page descend en panneau arrondi par-dessus l'ancienne.
+ * ------------------------------------------------------------------ */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+::view-transition-group(.page-enter) {
+  animation: none;
+  z-index: 2;
+}
+::view-transition-group(.page-exit) {
+  animation: none;
+  z-index: 1;
+}
+::view-transition-old(.page-exit) {
+  animation: page-dim 420ms ease-out both;
+}
+::view-transition-new(.page-enter) {
+  animation: page-drop 520ms var(--ease-soft) both;
+}
+/* La page peut être plus haute que l'écran : le panneau se mesure sur l'écran. */
+@keyframes page-drop {
+  from {
+    clip-path: inset(0 0 100% 0 round 0 0 2rem 2rem);
+  }
+  to {
+    clip-path: inset(0 0 calc(100% - 100lvh) 0 round 0 0 2rem 2rem);
+  }
+}
+@keyframes page-dim {
+  to {
+    opacity: 0.32;
+  }
+}
+/* Retour arrière et variante : même endroit, simple fondu. */
+html[data-nav]::view-transition-new(.page-enter) {
+  animation: page-in 320ms ease-out both;
+}
+html[data-nav]::view-transition-old(.page-exit) {
+  animation: page-out 240ms ease-out both;
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-new(*),
+  ::view-transition-old(*) {
+    animation: none !important;
+  }
+  .rise,
+  .rise-blur,
+  .pin-veil {
+    animation: none;
+  }
   *,
   *::before,
   *::after {

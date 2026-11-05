@@ -31,7 +31,10 @@ export default function Header({ active }: { active?: Active }) {
   };
 
   return (
-    <header className="pad relative z-40 flex items-center justify-between gap-3 pt-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:pt-11">
+    <header
+      style={{ viewTransitionName: "site-header" }}
+      className="pad relative z-40 flex items-center justify-between gap-3 pt-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:pt-11"
+    >
       <div className="flex min-w-0 items-center gap-2.5 sm:gap-4 lg:gap-6">
         {pathname !== "/" ? (
           <Tip label={t.header.back}>

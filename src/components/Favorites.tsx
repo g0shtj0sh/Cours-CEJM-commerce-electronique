@@ -12,7 +12,7 @@ export default function Favorites({ models }: { models: ShopModel[] }) {
   const favorites = models.filter((model) => slugs.includes(model.slug));
 
   return (
-    <main className="pad relative pt-10 pb-16">
+    <main className="pad rise relative pt-10 pb-16">
       <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.favorites.title}</h1>
 
       {favorites.length === 0 ? (

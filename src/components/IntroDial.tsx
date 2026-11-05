@@ -19,7 +19,11 @@ export default function IntroDial() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hold = reduced ? 0 : HOLD_MS;
-    const leave = window.setTimeout(() => setPhase("leaving"), hold);
+    const leave = window.setTimeout(() => {
+      setPhase("leaving");
+      // Le contenu de la page peut maintenant faire son entrée.
+      document.documentElement.dataset.ready = "";
+    }, hold);
     const gone = window.setTimeout(() => setPhase("gone"), hold + 350);
     return () => {
       window.clearTimeout(leave);

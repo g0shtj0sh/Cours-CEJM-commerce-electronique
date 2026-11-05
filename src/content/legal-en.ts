@@ -14,7 +14,7 @@ export function precontractuelEn(totalCents: number) {
     ],
     ["Payment", "By bank card, with strong authentication by your bank."],
     ["Delivery", `${livraison.transporteur}, to mainland France, within ${delaiEn}.`],
-    ["Withdrawal", "14 days from receipt, with no reason needed and no penalty. Return shipping is on us."],
+    ["Withdrawal", "14 days from receipt, with no reason needed and no penalty. Return shipping is on us. Refund no later than 14 days after your request."],
     [
       "Guarantees",
       `2-year legal guarantee of conformity, legal guarantee against hidden defects and ${garantie.commerciale.replace(" ans", "-year")} commercial warranty.`,
@@ -35,11 +35,19 @@ export const exceptionsRetractationEn = [
 export const cgvEn = [
   [
     "Purpose and scope",
-    "These terms govern the online sale of POINT watches by POINT SAS to consumers, meaning individuals buying from a professional seller for purposes outside their professional activity. Deliveries are limited to mainland France and French law applies.",
+    "These terms govern the online sale of POINT watches by POINT SAS to consumers, meaning individuals buying from a professional seller for purposes outside their professional activity. This site is offered in French and, as a courtesy, in English. Deliveries are limited to mainland France and French law applies, whichever language is chosen.",
+  ],
+  [
+    "Capacity",
+    "To order, the customer declares being of legal age and able to enter into a contract, or acting with the consent of their legal representatives.",
   ],
   [
     "Language and currency",
     "The contract is concluded in French: this English version is a courtesy translation and the French version prevails. Prices in dollars are indicative only, at a fixed rate of 1 euro to 1.10 dollars. Only the price in euros is billed.",
+  ],
+  [
+    "Product",
+    "POINT watches are lawful products, freely sold in France and CE marked. Their essential characteristics are set out on each product page.",
   ],
   [
     "Offer",
@@ -47,7 +55,7 @@ export const cgvEn = [
   ],
   [
     "Formation of the contract",
-    "The customer reviews the order details and total price, may correct any errors, then confirms by clicking « Order with obligation to pay ». POINT SAS acknowledges receipt of the order without undue delay and sends confirmation on a durable medium.",
+    "The contract is formed in two clicks. First click: the customer asks to review the order, sees its details and total price, and may correct any errors. Second click: the customer confirms by clicking « Order with obligation to pay », after accepting these terms. POINT SAS acknowledges receipt of the order without undue delay and sends confirmation on a durable medium.",
   ],
   [
     "Prices",
@@ -63,7 +71,7 @@ export const cgvEn = [
   ],
   [
     "Right of withdrawal",
-    "The customer has 14 days from receipt to withdraw, with no reason and no penalty, using the model form or any unambiguous statement. The customer returns the watch within 14 days of the decision, at the expense of POINT SAS. Reimbursement takes place no later than 14 days after POINT SAS is informed of the withdrawal, using the same means of payment unless otherwise agreed. It may be withheld until the goods are recovered or proof of shipment is supplied.",
+    "As this is a distance sale, the customer has 14 days from receipt to withdraw, with no reason and no penalty, using the model form or any unambiguous statement. The customer returns the watch within 14 days of the decision, at the expense of POINT SAS. Reimbursement takes place no later than 14 days after POINT SAS is informed of the withdrawal, using the same means of payment unless otherwise agreed. It may be withheld until the goods are recovered or proof of shipment is supplied.",
   ],
   [
     "Commercial warranty",
@@ -105,7 +113,7 @@ export const proprieteIndustrielleEn = [
     titre: "POINT® trademark",
     numero: "INPI filing no. 26 5 000 001",
     texte:
-      "Registered in France for watches (class 14) and online sales (class 35), for 10 years, renewable without limit. The name is distinctive: it describes neither the product nor one of its essential characteristics. Only these goods and services are protected.",
+      "Registered in France for watches (class 14) and online sales (class 35), for 10 years, renewable without limit. The name is distinctive: it describes neither the product nor one of its essential characteristics. It was filed with the INPI after a prior-rights search, to check that the name was free. The ® symbol marks a registered trademark. Only these goods and services are protected.",
   },
   {
     titre: "Patent",

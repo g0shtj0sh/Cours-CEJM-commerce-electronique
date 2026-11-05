@@ -23,6 +23,7 @@ import {
 import { legalContent } from "@/content/legal";
 import { livraison } from "@/content/vendeur";
 import type { ShopModel } from "@/lib/catalogue.server";
+import { markNavigation } from "@/lib/motion";
 import { usePrice, useSettings, useT } from "@/lib/settings";
 import { useCart, useFavorites } from "@/lib/stores";
 
@@ -75,28 +76,28 @@ export default function ProductView({
   };
 
   return (
-    <div style={ambientStyle(model)}>
+    <div className="tint" style={ambientStyle(model)}>
       <div className="relative overflow-hidden">
         <section className="relative z-10 overflow-hidden rounded-b-panel bg-night">
           <Surface />
           <div className="relative">
             <Header active="montres" />
             <main className="pad relative flex flex-col pt-6 pb-8 lg:min-h-[calc(100svh-15rem)] lg:pt-10">
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+              <div className="rise flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                 <SeriesBadge serie={model.serie} />
                 <p className="label text-accent">
                   {available ? t.common.inStock : t.common.soldOut}
                 </p>
               </div>
 
-              <div className="relative z-10 mt-6 lg:mt-[clamp(1.5rem,6vh,4rem)]">
+              <div className="rise relative z-10 mt-6 [--i:1] lg:mt-[clamp(1.5rem,6vh,4rem)]">
                 <p className="label text-muted">{model.ref}</p>
                 <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)]">
                   {model.name}
                 </h1>
               </div>
 
-              <div className="relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-6 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
+              <div className="rise-blur relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-6 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
                 <WatchImage
                   slug={model.slug}
                   name={model.name}
@@ -105,7 +106,7 @@ export default function ProductView({
                 />
               </div>
 
-              <div className="relative z-10 flex flex-wrap items-end justify-between gap-6 lg:mt-auto">
+              <div className="rise relative z-10 flex flex-wrap items-end justify-between gap-6 [--i:3] lg:mt-auto">
                 <div className="lg:mt-8 lg:max-w-[17rem]">
                   <p className="text-lg font-semibold text-accent tabular-nums">
                     {price.isUsd
@@ -120,6 +121,7 @@ export default function ProductView({
                   <p className="mt-1 text-xs text-muted">
                     {t.product.deliveryIncluded} {delay}
                   </p>
+                  <p className="mt-1 text-xs text-muted">{t.product.visualNote}</p>
 
                   <div className="mt-4">
                     <p className="label text-muted">
@@ -132,6 +134,7 @@ export default function ProductView({
                           <Link
                             href={`/montres/${variant.slug}`}
                             scroll={false}
+                            onClick={() => markNavigation("variant")}
                             aria-label={`${t.product.variant} ${variant.coloris[lang]}`}
                             aria-current={variant.slug === model.slug ? "true" : undefined}
                             className={[
@@ -200,7 +203,7 @@ export default function ProductView({
           </div>
         </section>
 
-        <section className="surface pad relative -mt-8 grid gap-8 rounded-b-panel pt-16 pb-9 lg:grid-cols-2">
+        <section className="surface rise pad relative -mt-8 grid gap-8 rounded-b-panel pt-16 pb-9 [--i:5] lg:grid-cols-2">
           <div>
             <p className="label">
               {model.name} <span className="ml-1 text-muted">{model.ref}</span>

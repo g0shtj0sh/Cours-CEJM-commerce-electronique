@@ -30,6 +30,9 @@ const emptyCustomer: Customer = {
   ville: "",
 };
 
+/** Codes postaux de France métropolitaine, Corse comprise : la vente s'arrête là. */
+const POSTCODE_PATTERN = "(0[1-9]|[1-8][0-9]|9[0-5])[0-9]{3}";
+
 const fields: { key: keyof Customer; type?: string; auto: string; wide?: boolean }[] = [
   { key: "prenom", auto: "given-name" },
   { key: "nom", auto: "family-name" },
@@ -98,7 +101,7 @@ export default function Checkout() {
 
   if (items.length === 0 && !order) {
     return (
-      <main className="pad relative pt-10 pb-14">
+      <main className="pad rise relative pt-10 pb-14">
         <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.checkout.title}</h1>
         <p className="copy mt-8">{t.checkout.empty}</p>
         <Link className="button mt-6" href="/montres">
@@ -109,7 +112,7 @@ export default function Checkout() {
   }
 
   return (
-    <main className="pad relative pt-10 pb-14">
+    <main className="pad rise relative pt-10 pb-14">
       <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.checkout.title}</h1>
 
       <ol className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-b border-line">
@@ -128,7 +131,7 @@ export default function Checkout() {
       </ol>
 
       <div className="mt-9 grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="min-w-0">
+        <div key={step} className="rise min-w-0">
           {step === "coordonnees" ? (
             <form
               onSubmit={(event) => {
@@ -145,6 +148,9 @@ export default function Checkout() {
                       className="field mt-1.5"
                       type={field.type ?? "text"}
                       autoComplete={field.auto}
+                      pattern={field.key === "codePostal" ? POSTCODE_PATTERN : undefined}
+                      title={field.key === "codePostal" ? t.checkout.postalHint : undefined}
+                      inputMode={field.key === "codePostal" ? "numeric" : undefined}
                       value={customer[field.key]}
                       onChange={(event) =>
                         setCustomer({ ...customer, [field.key]: event.target.value })
@@ -181,6 +187,8 @@ export default function Checkout() {
             <div>
               <h2 className="text-xl font-semibold">{t.checkout.verifyTitle}</h2>
               <p className="copy mt-2">{t.checkout.verifyText}</p>
+              <p className="copy mt-2">{t.checkout.twoClicks}</p>
+              <p className="copy mt-2">{t.checkout.lawNote}</p>
 
               <dl className="mt-6 grid gap-5 sm:grid-cols-2">
                 <div>
@@ -281,6 +289,18 @@ export default function Checkout() {
                     {t.checkout.withdrawalAfter}
                   </dd>
                 </div>
+                {newsletter ? (
+                  <div className="border-t border-line pt-3">
+                    <dt className="text-muted">{t.checkout.optOutTitle}</dt>
+                    <dd className="mt-1">
+                      {t.checkout.optOutText}{" "}
+                      <Link className="link" href="/mentions-legales#offres">
+                        {t.checkout.optOutLink}
+                      </Link>
+                      .
+                    </dd>
+                  </div>
+                ) : null}
                 <div className="border-t border-line pt-3">
                   <dt className="text-muted">{t.checkout.question}</dt>
                   <dd className="mt-1">

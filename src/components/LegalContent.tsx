@@ -1,12 +1,32 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import LegalPage, { GuaranteeBox, LegalSection } from "@/components/LegalPage";
 import { legalContent } from "@/content/legal";
 import { garantie, livraison, vendeur } from "@/content/vendeur";
 import { useSettings, useT } from "@/lib/settings";
 
 /** Contenu des pages d'information, dans la langue choisie. */
+
+/** Opt-out : retirer son accord doit être aussi simple que l'avoir donné. */
+function UnsubscribeButton({ en }: { en: boolean }) {
+  const [done, setDone] = useState(false);
+  if (done) {
+    return (
+      <p role="status" className="font-semibold text-ink">
+        {en
+          ? "Unsubscribed. Simulation: this site sends no email."
+          : "Désinscription enregistrée. Simulation : ce site n'envoie aucun e-mail."}
+      </p>
+    );
+  }
+  return (
+    <button type="button" className="button-ghost" onClick={() => setDone(true)}>
+      {en ? "Unsubscribe from offers" : "Me désinscrire des offres"}
+    </button>
+  );
+}
 
 export function TermsContent() {
   const { lang } = useSettings();
@@ -46,8 +66,8 @@ export function WarrantyContent() {
       <LegalSection id="retractation" title={en ? "Right of withdrawal" : "Droit de rétractation"}>
         <p>
           {en
-            ? "You have 14 days from receipt of your watch to withdraw, with no reason and no penalty."
-            : "Vous disposez de 14 jours à compter de la réception de votre montre pour vous rétracter, sans donner de motif et sans pénalité."}
+            ? "You have 14 days from receipt of your watch to withdraw, with no reason and no penalty. This right applies to every order placed here because you are buying online. In a physical shop it does not exist, except after doorstep or similar solicitation."
+            : "Vous disposez de 14 jours à compter de la réception de votre montre pour vous rétracter, sans donner de motif et sans pénalité. Ce droit s'applique à toutes les commandes passées ici, parce que vous achetez en ligne. En magasin, il n'existe qu'en cas de démarchage."}
         </p>
         <p>
           {en
@@ -64,6 +84,11 @@ export function WarrantyContent() {
             <li key={item}>{item}</li>
           ))}
         </ul>
+        <p>
+          {en
+            ? "A POINT watch is not made to measure, is not perishable and is not sealed for hygiene reasons. Neither its price nor its rarity removes this right."
+            : "Une montre POINT n'est ni faite sur mesure, ni périssable, ni scellée pour des raisons d'hygiène. Son prix ou sa rareté ne retirent pas ce droit."}
+        </p>
       </LegalSection>
 
       <LegalSection title={en ? "Model withdrawal form" : "Modèle de formulaire de rétractation"}>
@@ -161,17 +186,33 @@ export function NoticeContent() {
         </p>
         <p>
           {en
+            ? "Legal basis: performance of the contract for your order, your consent for offers by email."
+            : "Base légale : l'exécution du contrat pour votre commande, votre consentement pour les offres par e-mail."}
+        </p>
+        <p>
+          {en
             ? `You can request access, rectification, erasure or portability of your data, and object to its processing, on ${vendeur.telephone} or at ${vendeur.email}. You can also contact the CNIL, the French data protection authority.`
             : `Vous pouvez demander l'accès, la rectification, l'effacement ou la portabilité de vos données, et vous opposer à leur traitement, au ${vendeur.telephone} ou à ${vendeur.email}. Vous pouvez aussi saisir la CNIL.`}
         </p>
       </LegalSection>
 
-      <LegalSection title={en ? "Offers by email" : "Offres par e-mail"}>
+      <LegalSection id="offres" title={en ? "Offers by email" : "Offres par e-mail"}>
         <p>
           {en
-            ? "We only send you offers by email with your prior consent: the box at checkout is unticked by default. You can withdraw this consent at any time, free of charge, using the unsubscribe link in every email or by phone."
-            : "Nous ne vous envoyons d'offres par e-mail qu'avec votre accord préalable : la case prévue à la commande est décochée par défaut. Vous pouvez retirer cet accord à tout moment, gratuitement, par le lien de désinscription présent dans chaque e-mail ou par téléphone."}
+            ? "Opt-in: we only send you offers by email with your prior consent. The box at checkout is unticked by default, and ticking it is up to you."
+            : "Opt-in : nous ne vous envoyons d'offres par e-mail qu'avec votre accord préalable. La case prévue à la commande est décochée par défaut, et c'est à vous de la cocher."}
         </p>
+        <p>
+          {en
+            ? "Opt-out: you can withdraw this consent at any time, free of charge, using the unsubscribe link in every email, by phone or with the button below."
+            : "Opt-out : vous pouvez retirer cet accord à tout moment, gratuitement, par le lien de désinscription présent dans chaque e-mail, par téléphone ou avec le bouton ci-dessous."}
+        </p>
+        <p>
+          {en
+            ? "The law allows two exceptions to prior consent: messages to an existing customer about similar products, and non-commercial messages, such as those from charities. POINT uses neither: even if you are already a customer, we do not contact you without your consent."
+            : "La loi prévoit deux exceptions à l'accord préalable : les messages adressés à une personne déjà cliente pour des produits analogues, et les messages non commerciaux, par exemple caritatifs. POINT n'utilise aucune de ces exceptions : même déjà client, vous n'êtes pas démarché sans votre accord."}
+        </p>
+        <UnsubscribeButton en={en} />
       </LegalSection>
 
       <LegalSection title="Cookies">

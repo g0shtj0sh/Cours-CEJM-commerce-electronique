@@ -674,6 +674,7 @@ export function specs(model: Model, lang: Lang): [string, string][] {
       ["Functions", fonctions.join(", ")],
       ["Connectivity", "None: the watch does not communicate with any device"],
       ["Spare parts", "Available for 7 years after purchase"],
+      ["Compliance", "Lawful product, freely sold in France. CE marked. At end of life, take it to a collection point, not household waste."],
     ];
   }
   const fonctions = ["Heure", "date", "chronomètre", "alarme", "podomètre"];
@@ -691,6 +692,7 @@ export function specs(model: Model, lang: Lang): [string, string][] {
     ["Fonctions", fonctions.join(", ")],
     ["Connectivité", "Aucune : la montre ne communique avec aucun appareil"],
     ["Pièces détachées", "Disponibles pendant 7 ans après l'achat"],
+    ["Conformité", "Produit licite, en vente libre en France. Marquage CE. En fin de vie, à déposer en point de collecte, pas avec les ordures ménagères."],
   ];
 }
 
