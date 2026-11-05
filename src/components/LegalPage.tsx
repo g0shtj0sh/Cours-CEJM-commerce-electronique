@@ -26,7 +26,7 @@ export default function LegalPage({
   return (
     <>
       <div className="relative overflow-hidden">
-        <Surface />
+        <Surface fixed />
         <div className="relative">
           <Header active={active} />
           <main className="pad rise pt-10 pb-16">

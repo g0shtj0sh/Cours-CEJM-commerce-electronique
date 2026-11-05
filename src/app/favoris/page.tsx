@@ -11,7 +11,7 @@ export default function FavorisPage() {
   return (
     <>
       <div className="relative min-h-svh overflow-hidden">
-        <Surface />
+        <Surface fixed />
         <div className="relative">
           <Header />
           <Favorites models={shopModels()} />
