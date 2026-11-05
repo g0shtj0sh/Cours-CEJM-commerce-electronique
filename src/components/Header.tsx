@@ -49,7 +49,7 @@ export default function Header({ active }: { active?: Active }) {
           </Tip>
         ) : null}
         <Link href="/" className="matrix flex items-start text-2xl sm:text-[1.75rem]">
-          POINT
+          <span data-scramble>POINT</span>
           <span className="mt-0.5 ml-0.5 font-sans text-[0.625rem] font-semibold">®</span>
         </Link>
         <SiteMenu />
@@ -63,7 +63,7 @@ export default function Header({ active }: { active?: Active }) {
                 href={item.href}
                 aria-current={active === item.id ? "page" : undefined}
                 className={[
-                  "label whitespace-nowrap transition-colors hover:text-ink",
+                  "label nav-dot whitespace-nowrap transition-colors hover:text-ink",
                   active === item.id ? "text-ink" : "text-muted",
                 ].join(" ")}
               >
@@ -86,7 +86,7 @@ export default function Header({ active }: { active?: Active }) {
             className="relative flex"
           >
             <HeartIcon filled={slugs.length > 0} />
-            {slugs.length > 0 ? <Count value={slugs.length} /> : null}
+            {slugs.length > 0 ? <Count key={slugs.length} value={slugs.length} /> : null}
           </Link>
         </Tip>
 
@@ -108,7 +108,7 @@ export default function Header({ active }: { active?: Active }) {
             className="relative flex"
           >
             <BagIcon />
-            {lines.length > 0 ? <Count value={lines.length} /> : null}
+            {lines.length > 0 ? <Count key={lines.length} value={lines.length} /> : null}
           </Link>
         </Tip>
       </div>
@@ -118,7 +118,7 @@ export default function Header({ active }: { active?: Active }) {
 
 function Count({ value }: { value: number }) {
   return (
-    <span className="absolute -right-1.5 -bottom-1.5 flex size-4 items-center justify-center rounded-full bg-ink text-[0.625rem] font-bold text-night">
+    <span className="heart-pop absolute -right-1.5 -bottom-1.5 flex size-4 items-center justify-center rounded-full bg-ink text-[0.625rem] font-bold text-night">
       {value}
     </span>
   );

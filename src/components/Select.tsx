@@ -88,7 +88,7 @@ export default function Select({
         <ul
           role="listbox"
           aria-labelledby={labelId}
-          className="absolute bottom-[calc(100%+0.375rem)] left-0 z-50 w-full min-w-max rounded-xl border border-line bg-card p-1"
+          className="pop-in absolute bottom-[calc(100%+0.375rem)] left-0 z-50 w-full min-w-max rounded-xl border border-line bg-card p-1"
         >
           {options.map((option, index) => (
             <li key={option} role="presentation">

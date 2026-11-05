@@ -60,6 +60,13 @@ const fr = {
   },
   home: {
     explore: "À découvrir",
+    ticker: [
+      "Prix TTC, livraison incluse",
+      "14 jours pour changer d'avis",
+      "Garantie 3 ans",
+      "Séries limitées",
+      "Service client au 03 53 01 20 01",
+    ],
     whyTitle: "Pourquoi POINT",
     whyText: "Une marque, une demande de brevet et cinq formes déposées.",
     rangeTitle: "La gamme",
@@ -268,6 +275,13 @@ const en: Dictionary = {
   },
   home: {
     explore: "Explore",
+    ticker: [
+      "Prices include VAT and delivery",
+      "14 days to change your mind",
+      "3-year warranty",
+      "Limited series",
+      "Customer service 03 53 01 20 01",
+    ],
     whyTitle: "Why POINT",
     whyText: "One brand, one patent application and five registered shapes.",
     rangeTitle: "The range",

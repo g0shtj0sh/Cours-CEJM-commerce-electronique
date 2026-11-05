@@ -2,29 +2,50 @@
 
 import { useEffect, useState } from "react";
 
-const ticks = Array.from({ length: 60 }, (_, index) => index);
+/** Temps avant que le panneau ne se lève, compté depuis l'ouverture de la page. */
+const HOLD_MS = 820;
+const LEAVE_MS = 440;
 
-/** Durée d'affichage du cadran. À garder alignée sur .intro-hand dans globals.css. */
-const HOLD_MS = 1500;
+const LETTERS = [
+  ["11110", "10001", "10001", "11110", "10000", "10000", "10000"],
+  ["01110", "10001", "10001", "10001", "10001", "10001", "01110"],
+  ["11111", "00100", "00100", "00100", "00100", "00100", "11111"],
+  ["10001", "11001", "10101", "10101", "10011", "10001", "10001"],
+  ["11111", "00100", "00100", "00100", "00100", "00100", "00100"],
+];
+
+const COLUMNS = 29;
+const ROWS = 7;
+
+/** La matrice complète : les points du mot POINT sont marqués pour s'allumer. */
+const dots = Array.from({ length: ROWS * COLUMNS }, (_, index) => {
+  const row = Math.floor(index / COLUMNS);
+  const column = index % COLUMNS;
+  const letter = LETTERS[Math.floor(column / 6)];
+  const lit = column % 6 !== 5 && letter[row][column % 6] === "1";
+  return { row, column, lit };
+});
 
 /**
- * Cadran joué à chaque chargement ou rechargement de page. Il disparaît par
- * minuteur, jamais par une animation : un navigateur qui met les animations
- * en pause ne peut donc pas laisser la page masquée. Placé dans le layout, il
- * ne se rejoue pas lors des navigations internes.
+ * Ouverture du site, à chaque chargement : un point orange traverse la matrice
+ * et allume POINT sur son passage, puis l'écran se lève en panneau, comme lors
+ * d'un changement de page. Il disparaît par minuteur, jamais par une animation :
+ * un navigateur qui les met en pause ne peut pas laisser la page masquée.
  */
 export default function IntroDial() {
   const [phase, setPhase] = useState<"shown" | "leaving" | "gone">("shown");
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const hold = reduced ? 0 : HOLD_MS;
+    // Compté depuis l'ouverture : la durée ne dépend pas du temps de chargement du script.
+    const hold = reduced ? 0 : Math.max(120, HOLD_MS - performance.now());
     const leave = window.setTimeout(() => {
       setPhase("leaving");
       // Le contenu de la page peut maintenant faire son entrée.
       document.documentElement.dataset.ready = "";
+      window.dispatchEvent(new Event("point:ready"));
     }, hold);
-    const gone = window.setTimeout(() => setPhase("gone"), hold + 350);
+    const gone = window.setTimeout(() => setPhase("gone"), hold + LEAVE_MS);
     return () => {
       window.clearTimeout(leave);
       window.clearTimeout(gone);
@@ -34,27 +55,19 @@ export default function IntroDial() {
   if (phase === "gone") return null;
 
   return (
-    <div
-      aria-hidden
-      className="intro transition-opacity duration-300"
-      style={{ opacity: phase === "leaving" ? 0 : 1 }}
-    >
-      <svg viewBox="0 0 200 200" className="size-52">
-        {ticks.map((tick) => (
+    <div aria-hidden className="intro" data-leaving={phase === "leaving" ? "" : undefined}>
+      <svg viewBox="-1 -1 31 9" className="intro-matrix">
+        {dots.map(({ row, column, lit }) => (
           <circle
-            key={tick}
-            cx="100"
-            cy="14"
-            r={tick % 5 === 0 ? 1.8 : 0.9}
-            fill="#f6f3f0"
-            opacity={tick % 5 === 0 ? 0.9 : 0.4}
-            transform={`rotate(${tick * 6} 100 100)`}
+            key={`${row}-${column}`}
+            cx={column}
+            cy={row}
+            r={lit ? 0.4 : 0.16}
+            className={lit ? "intro-lit" : "intro-idle"}
+            style={lit ? { animationDelay: `${column * 17 + (row % 3) * 8}ms` } : undefined}
           />
         ))}
-        <g className="intro-hand">
-          <line x1="100" y1="116" x2="100" y2="30" stroke="#dca681" strokeWidth="1.6" />
-          <circle cx="100" cy="100" r="3.5" fill="#dca681" />
-        </g>
+        <circle cx="0" cy="3" r="0.55" className="intro-spark" />
       </svg>
     </div>
   );

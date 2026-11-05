@@ -17,9 +17,9 @@ export default function Footer() {
 
   return (
     <footer className="pad relative bg-night py-12 text-sm">
-      <div className="grid gap-10 md:grid-cols-3">
+      <div className="reveal grid gap-10 md:grid-cols-3">
         <div>
-          <p className="matrix text-2xl">POINT</p>
+          <p data-scramble className="matrix w-fit text-2xl">POINT</p>
           <p className="copy mt-3 text-sm">
             {t.footer.company(vendeur.formeJuridique, vendeur.capital, vendeur.rcs)}
           </p>
@@ -39,7 +39,7 @@ export default function Footer() {
           <ul className="mt-3 space-y-1.5">
             {links.map((link) => (
               <li key={link.href}>
-                <Link className="hover:text-accent" href={link.href}>
+                <Link className="slide-link hover:text-accent" href={link.href}>
                   {link.label}
                 </Link>
               </li>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import DotText from "@/components/DotText";
 import { DocumentIcon, HeartIcon, ShareIcon } from "@/components/Icons";
 import Header from "@/components/Header";
 import Select from "@/components/Select";
@@ -90,33 +91,47 @@ export default function ProductView({
               <div className="rise flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                 <SeriesBadge serie={model.serie} />
                 <p className="label text-accent">
+                  {available ? <span aria-hidden className="live" /> : null}
                   {available ? t.common.inStock : t.common.soldOut}
                 </p>
               </div>
 
               <div className="rise relative z-10 mt-6 [--i:1] lg:mt-[clamp(1.5rem,6vh,4rem)]">
                 <p className="label text-muted">{model.ref}</p>
-                <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)]">
-                  {model.name}
-                </h1>
+                <DotText
+                  as="h1"
+                  hover
+                  text={model.name}
+                  className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)]"
+                />
               </div>
 
               <div className="rise-blur relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-6 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
-                <WatchImage
-                  slug={model.slug}
-                  name={model.name}
-                  sizes="(min-width: 1024px) 46vw, 90vw"
-                  priority
-                />
+                <div className="parallax absolute inset-0">
+                  <div className="drift absolute inset-0">
+                    <WatchImage
+                      slug={model.slug}
+                      name={model.name}
+                      sizes="(min-width: 1024px) 46vw, 90vw"
+                      priority
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="rise relative z-10 flex flex-wrap items-end justify-between gap-6 [--i:3] lg:mt-auto">
                 <div className="lg:mt-8 lg:max-w-[17rem]">
-                  <p className="text-lg font-semibold text-accent tabular-nums">
-                    {price.isUsd
-                      ? price.usd(model.priceCents)
-                      : `${price.eur(model.priceCents)} ${t.common.vat}`}
-                  </p>
+                  <DotText
+                    as="p"
+                    digits
+                    duration={620}
+                    className="text-lg font-semibold text-accent tabular-nums"
+                    text={
+                      price.isUsd
+                        ? price.usd(model.priceCents)
+                        : `${price.eur(model.priceCents)} ${t.common.vat}`
+                    }
+                  />
                   {price.isUsd ? (
                     <p className="mt-1 text-xs text-ink">
                       {t.product.usdNote} {price.eur(model.priceCents)} {t.common.vat}.
@@ -184,7 +199,9 @@ export default function ProductView({
                       aria-pressed={isFavorite}
                       onClick={() => toggle(model.slug)}
                     >
-                      <HeartIcon filled={isFavorite} />
+                      <span key={String(isFavorite)} className="heart-pop block">
+                        <HeartIcon filled={isFavorite} />
+                      </span>
                     </button>
                   </Tip>
                   <Tip label={shared ? t.product.linkCopied : t.product.copyLink} side="left">
@@ -227,7 +244,7 @@ export default function ProductView({
                 <ul className="mt-4 space-y-1.5">
                   {suggestions.map((item) => (
                     <li key={item.slug}>
-                      <Link className="label text-muted hover:text-ink" href={`/montres/${item.slug}`}>
+                      <Link className="slide-link label text-muted hover:text-ink" href={`/montres/${item.slug}`}>
                         {nomModele(item)}
                       </Link>
                     </li>
@@ -240,7 +257,7 @@ export default function ProductView({
                     key={item.slug}
                     href={`/montres/${item.slug}`}
                     aria-label={nomModele(item)}
-                    className="relative size-20 lg:size-24"
+                    className="relative size-20 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:scale-105 lg:size-24"
                   >
                     <WatchImage slug={item.slug} name={item.name} sizes="96px" />
                   </Link>
@@ -253,12 +270,12 @@ export default function ProductView({
 
       <div className="pad grid gap-12 py-16 lg:grid-cols-2 lg:gap-20">
         <section id="fiche" className="min-w-0 scroll-mt-8">
-          <h2 className="matrix text-4xl">{t.product.description}</h2>
+          <DotText as="h2" onView hover text={t.product.description} className="matrix text-4xl" />
           <p className="copy mt-5">{text}</p>
           <p className="mt-4 text-sm font-semibold">{t.product.binding}</p>
           <dl className="mt-7 border-t border-line">
             {specs(model, lang).map(([label, value]) => (
-              <div key={label} className="grid gap-1 border-b border-line py-3 text-sm sm:grid-cols-[9rem_1fr] sm:gap-4">
+              <div key={label} className="reveal grid gap-1 border-b border-line py-3 text-sm sm:grid-cols-[9rem_1fr] sm:gap-4">
                 <dt className="text-muted">{label}</dt>
                 <dd>{value}</dd>
               </div>
@@ -267,10 +284,10 @@ export default function ProductView({
         </section>
 
         <section className="min-w-0">
-          <h2 className="matrix text-4xl">{t.product.beforeOrder}</h2>
+          <DotText as="h2" onView hover text={t.product.beforeOrder} className="matrix text-4xl" />
           <dl className="mt-5 space-y-5">
             {legal.precontractuel(model.priceCents).map(([label, value]) => (
-              <div key={label}>
+              <div key={label} className="reveal">
                 <dt className="label">{label}</dt>
                 <dd className="copy mt-1">{value}</dd>
               </div>

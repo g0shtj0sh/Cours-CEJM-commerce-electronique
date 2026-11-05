@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import DotText from "@/components/DotText";
 import ProductCard from "@/components/ProductCard";
 import type { ShopModel } from "@/lib/catalogue.server";
 import { useT } from "@/lib/settings";
@@ -13,7 +14,7 @@ export default function Favorites({ models }: { models: ShopModel[] }) {
 
   return (
     <main className="pad rise relative pt-10 pb-16">
-      <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.favorites.title}</h1>
+      <DotText as="h1" hover text={t.favorites.title} className="matrix text-[clamp(2.5rem,5vw,4rem)]" />
 
       {favorites.length === 0 ? (
         <div className="mt-8">

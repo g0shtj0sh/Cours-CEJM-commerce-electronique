@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { Model } from "@/content/catalogue";
+import DotText from "@/components/DotText";
 import { SwitchIcon } from "@/components/Icons";
 import { usePrice, useT } from "@/lib/settings";
 
@@ -55,7 +56,7 @@ export function SeriesBadge({ serie, muted }: { serie: number; muted?: boolean }
     <p className="pill label">
       <span className={muted ? "text-muted" : "text-accent"}>{t.common.seriesBefore}</span>
       <span>
-        {serie} {t.common.seriesAfter}
+        <DotText digits text={String(serie)} duration={620} /> {t.common.seriesAfter}
       </span>
     </p>
   );

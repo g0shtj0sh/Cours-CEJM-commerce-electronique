@@ -87,7 +87,7 @@ export default function SiteMenu() {
               <div className="pad relative flex min-h-full flex-col pt-6 pb-6 lg:pt-11 lg:pb-8">
                 <div className="flex items-center justify-between">
                   <Link href="/" onClick={close} className="matrix flex items-start text-[1.75rem]">
-                    POINT
+                    <span data-scramble>POINT</span>
                     <span className="mt-0.5 ml-0.5 font-sans text-[0.625rem] font-semibold">®</span>
                   </Link>
                   <button
@@ -126,6 +126,7 @@ export default function SiteMenu() {
                               ].join(" ")}
                             />
                             <span
+                              data-scramble
                               className={[
                                 "matrix text-[clamp(2.25rem,min(6vw,9vh),5rem)] transition-colors duration-200",
                                 active === index ? "text-ink" : "text-muted",

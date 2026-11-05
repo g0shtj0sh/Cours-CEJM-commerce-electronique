@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CloseIcon, PhoneIcon, ShieldIcon } from "@/components/Icons";
+import DotText from "@/components/DotText";
 import Select from "@/components/Select";
 import { SeriesBadge, WatchImage, ambientStyle } from "@/components/Shared";
 import { SERIE_RARE, findModel, strapSizes, tvaCents } from "@/content/catalogue";
@@ -24,7 +25,7 @@ export default function Cart() {
 
   return (
     <main className="pad rise relative pt-10 pb-14">
-      <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.cart.title}</h1>
+      <DotText as="h1" hover text={t.cart.title} className="matrix text-[clamp(2.5rem,5vw,4rem)]" />
 
       {items.length === 0 ? (
         <div className="mt-10">

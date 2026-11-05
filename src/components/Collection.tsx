@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import DotText from "@/components/DotText";
 import Header from "@/components/Header";
 import { SearchIcon } from "@/components/Icons";
 import ProductCard from "@/components/ProductCard";
@@ -236,7 +237,7 @@ export default function Collection({ models }: { models: ShopModel[] }) {
           if (rows.length === 0) return null;
           return (
             <section key={family.id} className="mt-9 scroll-mt-52 first-of-type:mt-6 lg:mt-14">
-              <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label[lang]}</h2>
+              <DotText as="h2" onView hover text={family.label[lang]} className="matrix text-[clamp(2.25rem,4vw,3.25rem)]" />
               {family.id === "parcours" ? (
                 <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
                   <ParcoursBanner />

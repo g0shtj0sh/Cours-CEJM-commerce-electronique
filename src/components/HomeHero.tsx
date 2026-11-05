@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import DotText from "@/components/DotText";
 import Header from "@/components/Header";
 import {
   ModelSwitcher,
@@ -43,7 +44,7 @@ export default function HomeHero({
   }, [previous, next]);
 
   return (
-    <div className="tint relative overflow-hidden" style={ambientStyle(model)}>
+    <div className="tint relative overflow-x-clip" style={ambientStyle(model)}>
       <AnimatePresence initial={false}>
         <motion.div
           key={model.slug}
@@ -66,6 +67,7 @@ export default function HomeHero({
               <SeriesBadge serie={model.serie} />
             </Swap>
             <p className="label text-accent">
+              {model.stock > 0 ? <span aria-hidden className="live" /> : null}
               {model.stock > 0 ? t.common.available : t.common.soldOut}
             </p>
           </div>
@@ -81,22 +83,33 @@ export default function HomeHero({
                 transition={{ duration: 0.34, ease: EASE_OUT }}
               >
                 <p className="label text-muted">{model.ref}</p>
-                <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)] lg:min-h-[2lh]">
-                  {model.name}
-                </h1>
+                <DotText
+                  as="h1"
+                  hover
+                  text={model.name}
+                  className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)] lg:min-h-[2lh]"
+                />
                 <p className="mt-4 max-w-[17rem] text-[0.9375rem] leading-snug text-ink/80 lg:min-h-[2lh]">
                   {accroche(model, lang)}
                 </p>
-                <p className="mt-2 text-sm font-semibold text-accent tabular-nums">
-                  {price.isUsd
-                    ? `${price.usd(model.priceCents)} (${price.eur(model.priceCents)} ${t.common.vat})`
-                    : `${price.eur(model.priceCents)} ${t.common.vat}`}
-                </p>
+                <DotText
+                  as="p"
+                  digits
+                  duration={620}
+                  className="mt-2 text-sm font-semibold text-accent tabular-nums"
+                  text={
+                    price.isUsd
+                      ? `${price.usd(model.priceCents)} (${price.eur(model.priceCents)} ${t.common.vat})`
+                      : `${price.eur(model.priceCents)} ${t.common.vat}`
+                  }
+                />
               </motion.div>
             </AnimatePresence>
           </div>
 
           <div className="rise-blur relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-20 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
+            <div className="parallax absolute inset-0">
+              <div className="drift absolute inset-0">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={model.slug}
@@ -119,6 +132,8 @@ export default function HomeHero({
                 />
               </motion.div>
             </AnimatePresence>
+              </div>
+            </div>
           </div>
 
           <div className="rise relative z-10 flex items-end justify-between gap-6 [--i:2] lg:mt-7 lg:flex-1 lg:items-start">

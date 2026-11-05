@@ -52,7 +52,7 @@ export default function Popover({
       {open ? (
         <div
           className={[
-            "absolute top-[calc(100%+0.625rem)] z-50 w-[min(16rem,calc(100vw-2.5rem))] rounded-2xl border border-line bg-card p-4 text-sm leading-relaxed",
+            "pop-in absolute top-[calc(100%+0.625rem)] z-50 w-[min(16rem,calc(100vw-2.5rem))] rounded-2xl border border-line bg-card p-4 text-sm leading-relaxed",
             align === "right" ? "right-0" : "left-0",
           ].join(" ")}
         >

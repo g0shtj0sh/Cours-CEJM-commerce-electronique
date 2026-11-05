@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import DotText from "@/components/DotText";
 import { findModel, tvaCents } from "@/content/catalogue";
 import { legalContent } from "@/content/legal";
 import { livraison, vendeur } from "@/content/vendeur";
@@ -102,7 +103,7 @@ export default function Checkout() {
   if (items.length === 0 && !order) {
     return (
       <main className="pad rise relative pt-10 pb-14">
-        <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.checkout.title}</h1>
+        <DotText as="h1" hover text={t.checkout.title} className="matrix text-[clamp(2.5rem,5vw,4rem)]" />
         <p className="copy mt-8">{t.checkout.empty}</p>
         <Link className="button mt-6" href="/montres">
           {t.common.viewWatches}
@@ -113,7 +114,7 @@ export default function Checkout() {
 
   return (
     <main className="pad rise relative pt-10 pb-14">
-      <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.checkout.title}</h1>
+      <DotText as="h1" hover text={t.checkout.title} className="matrix text-[clamp(2.5rem,5vw,4rem)]" />
 
       <ol className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-b border-line">
         {stepIds.map((id, index) => (

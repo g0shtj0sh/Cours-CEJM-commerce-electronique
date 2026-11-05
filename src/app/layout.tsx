@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Doto, Manrope } from "next/font/google";
 import "./globals.css";
+import Interactions from "@/components/Interactions";
 import IntroDial from "@/components/IntroDial";
 import SmoothScroll from "@/components/SmoothScroll";
 import { LangSync } from "@/lib/settings";
@@ -48,6 +49,7 @@ export default function RootLayout({
       <body>
         <LangSync />
         <IntroDial />
+        <Interactions />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
