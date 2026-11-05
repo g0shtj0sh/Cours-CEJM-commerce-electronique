@@ -9,7 +9,7 @@
  * que montre réellement son image (fonctions, couleurs de l'écran, voyants).
  */
 
-export type FamilyId = "carre" | "octo" | "rond" | "ligne";
+export type FamilyId = "parcours" | "carre" | "octo" | "rond" | "ligne";
 
 export type Family = {
   id: FamilyId;
@@ -23,6 +23,16 @@ export type Family = {
 };
 
 export const families: readonly Family[] = [
+  {
+    id: "parcours",
+    label: "Parcours (1)",
+    forme: "Carré",
+    tailleMm: 42,
+    boitier: "42 × 44 × 11 mm",
+    masse: "60 g, bracelet compris",
+    etancheite: "5 ATM : douche et nage en surface",
+    autonomie: "30 jours en usage courant",
+  },
   {
     id: "carre",
     label: "Carré (1)",
@@ -79,7 +89,7 @@ export type Model = {
   boitierMatiere: string;
   bracelet: string;
   /** Sert au filtre de la collection. */
-  matiere: "Fluoroélastomère" | "Nylon" | "Acier" | "Titane";
+  matiere: "Fluoroélastomère" | "Nylon" | "Acier" | "Titane" | "Cuir";
   fermoir: string;
   /** Ce que montre l'écran, couleurs comprises. */
   affichage: string;
@@ -87,6 +97,10 @@ export type Model = {
   particularite: string;
   /** Fonction ajoutée à la liste commune, si le modèle en a une. */
   fonctionPlus?: string;
+  /** Forme propre au modèle, si elle diffère de sa famille. */
+  forme?: string;
+  /** Silhouette utilisée par le filtre « Forme ». */
+  silhouette?: Exclude<FamilyId, "parcours">;
   /** Dimensions propres au modèle, si elles diffèrent de sa famille. */
   boitier?: string;
   masse?: string;
@@ -99,7 +113,125 @@ export type Model = {
 const CHIFFRES = "Chiffres en points blancs";
 const VOYANTS = "Une colonne de voyants latéraux signale le niveau de charge.";
 
+const parcours = (decor: string) =>
+  `Un chemin relie A à B, de 00:00 à 23:59, et un point orange y avance au fil de la journée, dans un décor ${decor}. C'est une façon de lire l'heure : la montre ne suit pas votre position.`;
+
 export const catalogue: readonly Model[] = [
+  {
+    slug: "parcours-montagne",
+    family: "parcours",
+    name: "Parcours (1) Montagne",
+    ref: "PT-P1-MT",
+    priceCents: 34900,
+    serie: 250,
+    stock: 118,
+    boitierMatiere: "Aluminium champagne, lunette noire",
+    bracelet: "Nylon tissé olive",
+    matiere: "Nylon",
+    fermoir: "Passant cousu",
+    affichage: "Heure, chemin et décor en points blancs, point orange",
+    particularite: parcours("de montagne"),
+    fonctionPlus: "parcours de la journée",
+    forme: "Octogonal",
+    silhouette: "octo",
+    boitier: "44 × 44 × 12 mm",
+    masse: "58 g, bracelet compris",
+    tailleMm: 44,
+    ambient: "84 96 44",
+    accent: "#cdd88e",
+  },
+  {
+    slug: "parcours-urbain",
+    family: "parcours",
+    name: "Parcours (1) Urbain",
+    ref: "PT-P1-UR",
+    priceCents: 37900,
+    serie: 250,
+    stock: 94,
+    boitierMatiere: "Titane brossé",
+    bracelet: "Maillons en titane brossé",
+    matiere: "Titane",
+    fermoir: "Boucle déployante",
+    affichage: "Heure, chemin et décor en points blancs, point orange",
+    particularite: parcours("de ville"),
+    fonctionPlus: "parcours de la journée",
+    forme: "Carré",
+    silhouette: "carre",
+    boitier: "42 × 44 × 11 mm",
+    masse: "84 g, bracelet compris",
+    tailleMm: 42,
+    ambient: "84 92 110",
+    accent: "#ff9a52",
+  },
+  {
+    slug: "parcours-desert",
+    family: "parcours",
+    name: "Parcours (1) Désert",
+    ref: "PT-P1-DS",
+    priceCents: 42900,
+    serie: 100,
+    stock: 37,
+    boitierMatiere: "Bronze brossé",
+    bracelet: "Cuir de veau grainé marron",
+    matiere: "Cuir",
+    fermoir: "Boucle à ardillon en bronze",
+    affichage: "Heure, chemin et décor en points blancs, point orange",
+    particularite: parcours("de désert"),
+    fonctionPlus: "parcours de la journée",
+    forme: "Tonneau",
+    silhouette: "ligne",
+    boitier: "38 × 48 × 10 mm",
+    masse: "72 g, bracelet compris",
+    tailleMm: 38,
+    ambient: "150 80 30",
+    accent: "#f2b36b",
+  },
+  {
+    slug: "parcours-foret",
+    family: "parcours",
+    name: "Parcours (1) Forêt",
+    ref: "PT-P1-FR",
+    priceCents: 29900,
+    serie: 250,
+    stock: 142,
+    boitierMatiere: "Polycarbonate fumé",
+    bracelet: "Fluoroélastomère côtelé vert sauge",
+    matiere: "Fluoroélastomère",
+    fermoir: "Boucle à ardillon en acier noirci",
+    affichage: "Heure, chemin et décor en points blancs, point orange, rivière en points verts",
+    particularite: parcours("de forêt"),
+    fonctionPlus: "parcours de la journée",
+    forme: "Allongé",
+    silhouette: "ligne",
+    boitier: "36 × 50 × 10 mm",
+    masse: "36 g, bracelet compris",
+    tailleMm: 36,
+    ambient: "62 92 66",
+    accent: "#bcd8ac",
+  },
+  {
+    slug: "parcours-cosmos",
+    family: "parcours",
+    name: "Parcours (1) Cosmos",
+    ref: "PT-P1-CS",
+    priceCents: 36900,
+    serie: 250,
+    stock: 103,
+    boitierMatiere: "Acier noirci",
+    bracelet: "Maille milanaise noire",
+    matiere: "Acier",
+    fermoir: "Fermoir coulissant magnétique",
+    affichage: "Heure, chemin et décor en points blancs, point orange",
+    particularite: parcours("de ciel étoilé"),
+    fonctionPlus: "parcours de la journée",
+    forme: "Rond",
+    silhouette: "rond",
+    boitier: "42 mm de diamètre, 11 mm d'épaisseur",
+    masse: "66 g, bracelet compris",
+    tailleMm: 42,
+    ambient: "52 40 110",
+    accent: "#b9adff",
+  },
   {
     slug: "carre-clair",
     family: "carre",
@@ -342,6 +474,10 @@ export function tailleOf(model: Model): number {
   return model.tailleMm ?? familyOf(model).tailleMm;
 }
 
+export function silhouetteOf(model: Model): FamilyId {
+  return model.silhouette ?? model.family;
+}
+
 export function findModel(slug: string): Model | undefined {
   return catalogue.find((model) => model.slug === slug);
 }
@@ -351,7 +487,7 @@ export function descriptif(model: Model): string {
   const family = familyOf(model);
   return (
     `${model.name} est une montre-bracelet numérique à écran à matrice de points. ` +
-    `Son boîtier ${family.forme.toLowerCase()} mesure ${model.boitier ?? family.boitier}. ` +
+    `Son boîtier ${(model.forme ?? family.forme).toLowerCase()} mesure ${model.boitier ?? family.boitier}. ` +
     `Il associe ${model.boitierMatiere.toLowerCase()}, sous un verre saphir plat. ` +
     `La montre indique l'heure et la date, et propose un chronomètre, une alarme et un podomètre. ` +
     `${model.particularite} ` +

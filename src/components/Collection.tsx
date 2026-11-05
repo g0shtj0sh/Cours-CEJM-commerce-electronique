@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { SearchIcon } from "@/components/Icons";
@@ -8,6 +9,7 @@ import {
   catalogue,
   euros,
   families,
+  silhouetteOf,
   tailleOf,
   type FamilyId,
   type Model,
@@ -15,7 +17,7 @@ import {
 import type { ShopModel } from "@/lib/catalogue.server";
 import { useFavorites } from "@/lib/stores";
 
-const shapes: { id: FamilyId; label: string; path: React.ReactNode }[] = [
+const shapes: { id: Exclude<FamilyId, "parcours">; label: string; path: React.ReactNode }[] = [
   { id: "carre", label: "Carré", path: <rect x="7" y="7" width="10" height="10" rx="2.5" /> },
   { id: "octo", label: "Octogonal", path: <path d="M9.5 6h5L18 9.5v5L14.5 18h-5L6 14.5v-5L9.5 6Z" /> },
   { id: "rond", label: "Rond", path: <circle cx="12" cy="12" r="6" /> },
@@ -29,6 +31,7 @@ const materials: { id: Model["matiere"]; color: string }[] = [
   { id: "Nylon", color: "#5f6b3c" },
   { id: "Acier", color: "#9b9ea3" },
   { id: "Titane", color: "#55524f" },
+  { id: "Cuir", color: "#6b4226" },
 ];
 
 function FilterLabel({ name, value }: { name: string; value?: string }) {
@@ -84,6 +87,31 @@ function ProductCard({ model }: { model: ShopModel }) {
   );
 }
 
+/** Présente la collection Parcours, la dernière de la gamme. */
+function ParcoursBanner() {
+  return (
+    <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-panel bg-card md:aspect-[21/9]">
+      <Image
+        src="/images/parcours-collection.webp"
+        alt="Les cinq montres de la collection Parcours"
+        fill
+        decoding="sync"
+        sizes="90vw"
+        className="object-cover"
+      />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+      <div className="absolute inset-x-6 bottom-5 md:inset-x-8 md:bottom-7">
+        <p className="label text-accent">Nouveau</p>
+        <p className="mt-1 text-lg font-semibold">Votre journée, de A à B.</p>
+        <p className="mt-1 max-w-xl text-sm text-ink/80">
+          Un point orange avance de 00:00 à 23:59 dans cinq décors : montagne,
+          ville, désert, forêt et cosmos.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 /** Rangée qui défile à l'horizontale : la carte suivante dépasse, comme dans la vidéo. */
 function CardRow({ models }: { models: ShopModel[] }) {
   return (
@@ -109,7 +137,7 @@ export default function Collection({ models }: { models: ShopModel[] }) {
     const query = search.trim().toLowerCase();
     return models.filter((model) => {
       return (
-        (!shape || model.family === shape) &&
+        (!shape || silhouetteOf(model) === shape) &&
         (!size || tailleOf(model) === size) &&
         (!material || model.matiere === material) &&
         (!query || `${model.name} ${model.ref}`.toLowerCase().includes(query))
@@ -232,6 +260,7 @@ export default function Collection({ models }: { models: ShopModel[] }) {
         return (
           <section key={family.id} className="mt-14">
             <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label}</h2>
+            {family.id === "parcours" ? <ParcoursBanner /> : null}
             <CardRow models={rows} />
           </section>
         );

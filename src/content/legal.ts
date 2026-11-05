@@ -116,6 +116,6 @@ export const proprieteIndustrielle = [
     titre: "Dessins et modèles",
     numero: "Dépôt INPI n° 26 0001",
     texte:
-      "Protègent l'apparence des boîtiers Carré, Octo, Rond et Ligne, pour 5 ans renouvelables par périodes de 5 ans, jusqu'à 25 ans.",
+      "Protègent l'apparence des boîtiers Carré, Octo, Rond, Ligne et Tonneau, pour 5 ans renouvelables par périodes de 5 ans, jusqu'à 25 ans.",
   },
 ] as const;
