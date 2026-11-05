@@ -1,51 +1,39 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------ *
-   TIMBRE 03 — système de design
-   Référence visuelle : façade d'ampli hi-fi sérigraphiée, aluminium
-   brossé. Aucun arrondi, aucune ombre : la profondeur vient des
-   filets 1px et du contraste de valeur.
+   POINT — structure de la maquette, écriture de Nothing.
+   Fond noir teinté par la couleur d'ambiance du modèle affiché, trame
+   de points discrète, titres en matrice de points.
  * ------------------------------------------------------------------ */
 
 @theme {
-  --color-alu: #c6c8c3;
-  --color-alu-hi: #e4e5e1;
-  --color-alu-lo: #9ea19b;
-  --color-ink: #15191c;
-  --color-ink-soft: #464e53;
-  --color-blue: #1a4e8a;
-  --color-peak: #d8431c;
+  --color-night: #050403;
+  --color-card: #12100f;
+  --color-line: rgb(255 255 255 / 0.12);
+  --color-ink: #f6f3f0;
+  --color-muted: #a39b94;
+  --color-dim: #746d67;
 
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-matrix: var(--font-doto), ui-monospace, monospace;
 
-  --radius-none: 0px;
-}
-
-@property --wdth {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 100;
+  --radius-panel: 1.75rem;
 }
 
 :root {
-  color-scheme: light;
-  /* gouttière de la grille façade */
-  --rail: 1px;
+  color-scheme: dark;
+  --pad: clamp(1.25rem, 5.6vw, 5.5rem);
+  --ambient: 96 78 66;
+  --accent: #dca681;
 }
 
 @layer base {
-  html {
-    -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
-  }
-
   body {
-    background-color: var(--color-alu);
+    background-color: var(--color-night);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-synthesis: none;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
   }
 
   a,
@@ -53,14 +41,18 @@
     color: inherit;
   }
 
+  button:not(:disabled),
+  select {
+    cursor: pointer;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-blue);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
 }
 
 @layer components {
-  /* Défilement lissé (Lenis) — reprend la main sur le défilement natif. */
   html.lenis,
   html.lenis body {
     height: auto;
@@ -68,144 +60,161 @@
   .lenis.lenis-smooth {
     scroll-behavior: auto !important;
   }
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
   .lenis.lenis-stopped {
     overflow: hidden;
   }
 
-  /* --- axe de largeur : le cœur du système typographique --- */
-
-  .t-wide {
-    font-variation-settings: "wdth" 125;
-    letter-spacing: -0.02em;
+  .pad {
+    padding-inline: var(--pad);
   }
 
-  .t-narrow {
-    font-variation-settings: "wdth" 62;
-    letter-spacing: 0.04em;
-  }
-
-  /* Données techniques : condensé, pas de monospace, pas de capitales. */
-  .t-data {
-    font-variation-settings: "wdth" 70;
-    font-weight: 600;
-    font-size: 0.8125rem;
-    line-height: 1.25;
-    letter-spacing: 0.035em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* --- échelle de corps --- */
-
-  .d-xl {
-    font-size: clamp(3.5rem, 14vw, 13rem);
+  /* Titres en matrice de points, comme les titres de Nothing. */
+  .matrix {
+    font-family: var(--font-matrix);
+    font-variation-settings: "ROND" 100;
     font-weight: 800;
-    line-height: 0.82;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    text-transform: uppercase;
   }
 
-  .d-l {
-    font-size: clamp(2rem, 5.2vw, 4rem);
-    font-weight: 700;
-    line-height: 0.95;
-    font-variation-settings: "wdth" 112;
-    letter-spacing: -0.02em;
+  .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+    text-transform: uppercase;
   }
 
-  .d-m {
-    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
-    font-weight: 700;
-    line-height: 1.1;
-    font-variation-settings: "wdth" 108;
-    letter-spacing: -0.015em;
-  }
-
-  .body-l {
-    font-size: clamp(1.0625rem, 1.35vw, 1.25rem);
-    line-height: 1.55;
-    max-width: 34ch;
-  }
-
-  .body {
-    font-size: 1rem;
-    line-height: 1.62;
+  .copy {
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+    line-height: 1.65;
     max-width: 68ch;
-    color: var(--color-ink-soft);
-  }
-}
-
-/* --- filets & panneaux --- */
-
-/* Déclarés en utilitaires pour accepter les variantes responsive. */
-@utility rule-t {
-  border-top: var(--rail) solid var(--color-ink);
-}
-@utility rule-b {
-  border-bottom: var(--rail) solid var(--color-ink);
-}
-@utility rule-l {
-  border-left: var(--rail) solid var(--color-ink);
-}
-@utility hair-t {
-  border-top: var(--rail) solid color-mix(in srgb, var(--color-ink) 22%, transparent);
-}
-@utility hair-b {
-  border-bottom: var(--rail) solid color-mix(in srgb, var(--color-ink) 22%, transparent);
-}
-@utility hair-l {
-  border-left: var(--rail) solid color-mix(in srgb, var(--color-ink) 22%, transparent);
-}
-
-@layer components {
-  /* Aluminium brossé : stries verticales très fines, pas un dégradé. */
-  .brushed {
-    background-image: repeating-linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.5) 0px,
-        rgba(255, 255, 255, 0) 1px,
-        rgba(0, 0, 0, 0.035) 2px,
-        rgba(255, 255, 255, 0) 3px
-      ),
-      linear-gradient(180deg, var(--color-alu-hi) 0%, var(--color-alu) 58%, #b9bcb7 100%);
   }
 
-  .shell {
+  /* Halos : reprennent la couleur d'ambiance, plus forts en haut à gauche. */
+  .surface {
+    background:
+      radial-gradient(44% 58% at 20% -6%, rgb(var(--ambient) / 0.92), transparent 74%),
+      radial-gradient(32% 44% at 62% 0%, rgb(var(--ambient) / 0.5), transparent 76%),
+      radial-gradient(34% 46% at 2% 62%, rgb(var(--ambient) / 0.3), transparent 74%),
+      radial-gradient(38% 44% at 100% 100%, rgb(var(--ambient) / 0.16), transparent 72%),
+      var(--color-night);
+  }
+
+  /* Trame de points empruntée aux pages Nothing. */
+  .dots {
+    background-image: radial-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1.3px);
+    background-size: 2.25rem 2.25rem;
+    mask-image: linear-gradient(180deg, #000, transparent 80%);
+  }
+
+  .pill {
+    align-items: center;
+    background-color: rgb(255 255 255 / 0.1);
+    border-radius: 999px;
+    display: inline-flex;
+    gap: 0.4375rem;
+    padding: 0.5rem 0.875rem;
+    width: fit-content;
+  }
+
+  .button {
+    align-items: center;
+    background-color: var(--accent);
+    border-radius: 999px;
+    color: #120d09;
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    padding: 0.6875rem 1.25rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: filter 140ms ease;
+    width: fit-content;
+  }
+  .button:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+  .button:disabled {
+    background-color: rgb(255 255 255 / 0.1);
+    color: var(--color-muted);
+    cursor: not-allowed;
+  }
+
+  .button-ghost {
+    align-items: center;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    padding: 0.6875rem 1.25rem;
+    text-transform: uppercase;
+    transition: border-color 140ms ease;
+  }
+  .button-ghost:hover {
+    border-color: var(--color-muted);
+  }
+
+  /* Carte produit : se teinte de la couleur du modèle au survol. */
+  .card {
+    background: linear-gradient(165deg, rgb(var(--ambient) / 0.12), rgb(0 0 0 / 0.72) 62%);
+    border-radius: var(--radius-panel);
+    transition: background-color 220ms ease;
+  }
+  .card:hover {
+    background-color: rgb(var(--ambient) / 0.22);
+  }
+
+  .field {
+    background-color: rgb(255 255 255 / 0.07);
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    color: var(--color-ink);
+    font-size: 0.9375rem;
+    padding: 0.6875rem 0.875rem;
     width: 100%;
-    max-width: 88rem;
-    margin-inline: auto;
-    padding-inline: clamp(1rem, 4vw, 3.5rem);
   }
-
-  /* --- interactions --- */
+  .field option {
+    background-color: var(--color-card);
+  }
 
   .link {
-    color: var(--color-blue);
+    color: var(--accent);
     text-decoration: underline;
     text-decoration-thickness: 1px;
-    text-underline-offset: 0.18em;
-  }
-  .link:hover {
-    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
   }
 
-  /* Cible tactile des pastilles de finition */
-  .swatch {
-    position: relative;
-    width: 2.25rem;
-    height: 2.25rem;
-    border: 1px solid var(--color-ink);
-    transition: box-shadow 120ms linear;
-  }
-  .swatch[aria-pressed="true"] {
-    box-shadow: inset 0 0 0 3px var(--color-alu-hi), inset 0 0 0 4px var(--color-blue);
+  .text-accent {
+    color: var(--accent);
   }
 
-  /* Témoin de crête : le seul vermillon de la page. */
-  .peak {
-    width: 0.4rem;
-    height: 0.4rem;
-    background: var(--color-peak);
+  /* Cadran d'ouverture, repris de la transition de la vidéo. */
+  .intro {
+    align-items: center;
+    background: var(--color-night);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    position: fixed;
+    z-index: 80;
+  }
+  .intro-hand {
+    animation: intro-hand 1150ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
+    transform-origin: 100px 100px;
+  }
+}
+
+@keyframes intro-hand {
+  to {
+    transform: rotate(360deg);
   }
 }
 
