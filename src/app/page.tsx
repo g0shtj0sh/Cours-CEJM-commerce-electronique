@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import HomeHero from "@/components/HomeHero";
-import IntroDial from "@/components/IntroDial";
 import { editorialImage, shopModels } from "@/lib/catalogue.server";
 
 export default function Home() {
@@ -31,7 +30,6 @@ export default function Home() {
 
   return (
     <>
-      <IntroDial />
       <HomeHero models={models}>
         <section aria-label="À découvrir" className="pad grid gap-6 pb-14 md:grid-cols-3">
           {stories.map((story) => (

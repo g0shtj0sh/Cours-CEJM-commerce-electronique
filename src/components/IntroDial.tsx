@@ -4,19 +4,21 @@ import { useEffect, useState } from "react";
 
 const ticks = Array.from({ length: 60 }, (_, index) => index);
 
+/** Durée d'affichage du cadran. À garder alignée sur .intro-hand dans globals.css. */
+const HOLD_MS = 2000;
+
 /**
- * Cadran d'ouverture de la vidéo, joué une fois par visite. Il disparaît par
+ * Cadran joué à chaque chargement ou rechargement de page. Il disparaît par
  * minuteur, jamais par une animation : un navigateur qui met les animations
- * en pause ne peut donc pas laisser la page masquée.
+ * en pause ne peut donc pas laisser la page masquée. Placé dans le layout, il
+ * ne se rejoue pas lors des navigations internes.
  */
 export default function IntroDial() {
   const [phase, setPhase] = useState<"shown" | "leaving" | "gone">("shown");
 
   useEffect(() => {
-    const seen = window.sessionStorage.getItem("point:intro") === "1";
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.sessionStorage.setItem("point:intro", "1");
-    const hold = seen || reduced ? 0 : 1200;
+    const hold = reduced ? 0 : HOLD_MS;
     const leave = window.setTimeout(() => setPhase("leaving"), hold);
     const gone = window.setTimeout(() => setPhase("gone"), hold + 350);
     return () => {

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Doto, Manrope } from "next/font/google";
 import "./globals.css";
+import IntroDial from "@/components/IntroDial";
 import SmoothScroll from "@/components/SmoothScroll";
 
 /** Doto pour les titres en matrice de points, Manrope pour tout le reste. */
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${doto.variable} ${manrope.variable}`}>
       <body>
+        <IntroDial />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

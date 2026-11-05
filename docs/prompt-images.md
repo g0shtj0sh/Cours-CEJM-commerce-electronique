@@ -1,7 +1,8 @@
 # Prompts pour générer les images POINT avec ChatGPT
 
 **Où on en est :** les 13 montres et les 3 cartes de l'accueil sont en place. Il reste
-seulement les mises en scène de la fin du bloc 4, facultatives.
+la nouvelle image de la carte « Pourquoi POINT » (bloc 5) et, en option, les mises
+en scène de la fin du bloc 4.
 
 Dans ChatGPT, joins **ton image de la page sombre** et **tes images de montres**
 (toutes celles que tu as déjà), puis colle
@@ -93,6 +94,34 @@ Aucun texte ajouté, aucun visage reconnaissable, aucune marque sauf POINT sur l
 5. octo-noir-scene.png : la montre Octo noire posée sur une pierre noire, 3:2.
 6. octo-sable-scene.png : la montre Octo sable posée sur une pierre noire, 3:2.
 7. rond-nuit-scene.png : la montre Rond nuit posée sur une pierre noire, 3:2.
+```
+
+---
+
+## Bloc 5 — Nouvelle image de la carte « Pourquoi POINT »
+
+Cette carte parle de la marque, pas d'un produit : l'image ne doit donc pas
+montrer de montre. Enregistre-la sous `editorial-marque.png`, elle remplacera
+l'actuelle.
+
+```text
+Crée une nouvelle image pour la carte « Pourquoi POINT » de mon site. Elle
+présente la marque, pas un produit : aucune montre, aucun bracelet, aucun
+écran, aucun objet reconnaissable.
+
+Sujet : une photographie macro d'une plaque d'aluminium noir anodisé, percée
+d'une grille parfaitement régulière de minuscules trous ronds, comme la matrice
+de points d'un afficheur éteint. Les points s'estompent dans le noir vers les
+bords. Un seul point est allumé, en orange vif, légèrement à droite du centre
+et au-dessus du milieu de l'image. Il diffuse une petite lueur chaude sur les
+points voisins. C'est le seul élément de couleur de l'image.
+
+Style : photo de produit de studio, très sombre et très contrastée, lumière
+rasante chaude venue du coin supérieur gauche, faible profondeur de champ,
+même ambiance que mes autres images.
+
+Contraintes : format 4:3, aucun texte, aucune lettre, aucun chiffre, aucun logo.
+Garde tout le quart inférieur très sombre et sans détail, car j'y place du texte.
 ```
 
 ---
