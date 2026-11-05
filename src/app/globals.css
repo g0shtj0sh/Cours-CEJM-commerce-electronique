@@ -207,8 +207,50 @@
     z-index: 80;
   }
   .intro-hand {
-    animation: intro-hand 2000ms cubic-bezier(0.45, 0, 0.2, 1) forwards;
+    animation: intro-hand 1500ms cubic-bezier(0.45, 0, 0.2, 1) forwards;
     transform-origin: 100px 100px;
+  }
+}
+
+/* Barres de défilement aux couleurs du site. */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-night);
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.18);
+  background-clip: padding-box;
+  border: 2px solid var(--color-night);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+  background-clip: padding-box;
+}
+
+/* Barre des rangées de montres : piste discrète, curseur à la couleur d'accent. */
+.rail::-webkit-scrollbar-track {
+  background: rgb(255 255 255 / 0.08);
+  border-radius: 999px;
+  margin-right: var(--pad);
+}
+.rail::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border: 0;
+  border-radius: 999px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-color: rgb(255 255 255 / 0.25) var(--color-night);
+    scrollbar-width: thin;
+  }
+  .rail {
+    scrollbar-color: var(--accent) rgb(255 255 255 / 0.08);
+    scrollbar-width: thin;
   }
 }
 

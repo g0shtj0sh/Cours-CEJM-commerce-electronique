@@ -80,6 +80,11 @@ export const families: readonly Family[] = [
 
 export type Model = {
   slug: string;
+  /** Regroupe les déclinaisons d'une même montre : même boîtier, autre couleur. */
+  groupe?: string;
+  /** Nom du coloris et couleur de sa pastille. */
+  coloris: string;
+  pastille: string;
   family: FamilyId;
   /** Nom complet, affiché en grand. */
   name: string;
@@ -122,6 +127,9 @@ const parcours = (decor: string) =>
 export const catalogue: readonly Model[] = [
   {
     slug: "carre-clair",
+    groupe: "carre",
+    coloris: "Clair",
+    pastille: "#e9e4dc",
     family: "carre",
     name: "Carré (1) Clair",
     ref: "PT-C1-CL",
@@ -139,6 +147,9 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "carre-noir",
+    groupe: "carre",
+    coloris: "Noir",
+    pastille: "#1d1d1f",
     family: "carre",
     name: "Carré (1) Noir",
     ref: "PT-C1-NR",
@@ -156,6 +167,9 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "octo-olive",
+    groupe: "octo",
+    coloris: "Olive",
+    pastille: "#5b6b35",
     family: "octo",
     name: "Octo (1) Olive",
     ref: "PT-O1-OL",
@@ -173,6 +187,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "rond-maille",
+    coloris: "Argent",
+    pastille: "#9b9ea3",
     family: "rond",
     name: "Rond (1) Maille",
     ref: "PT-R1-ML",
@@ -190,6 +206,9 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "rond-cuivre",
+    groupe: "rond-index",
+    coloris: "Cuivre",
+    pastille: "#c98a5e",
     family: "rond",
     name: "Rond (1) Cuivre",
     ref: "PT-R1-CV",
@@ -207,6 +226,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "rond-orbite",
+    coloris: "Noir",
+    pastille: "#1a1a1d",
     family: "rond",
     name: "Rond (1) Orbite",
     ref: "PT-R1-OB",
@@ -225,6 +246,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "octo-orange",
+    coloris: "Orange",
+    pastille: "#e8651f",
     family: "octo",
     name: "Octo (1) Orange",
     ref: "PT-O1-OR",
@@ -243,6 +266,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "ligne-cobalt",
+    coloris: "Cobalt",
+    pastille: "#1c2f9e",
     family: "ligne",
     name: "Ligne (1) Cobalt",
     ref: "PT-L1-CB",
@@ -265,6 +290,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "ligne-cristal",
+    coloris: "Cristal",
+    pastille: "#dfe5e3",
     family: "ligne",
     name: "Ligne (1) Cristal",
     ref: "PT-L1-CR",
@@ -282,6 +309,9 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "carre-cobalt",
+    groupe: "carre",
+    coloris: "Cobalt",
+    pastille: "#1f3fd0",
     family: "carre",
     name: "Carré (1) Cobalt",
     ref: "PT-C1-CB",
@@ -299,6 +329,9 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "octo-noir",
+    groupe: "octo",
+    coloris: "Noir",
+    pastille: "#17171a",
     family: "octo",
     name: "Octo (1) Noir",
     ref: "PT-O1-NR",
@@ -316,6 +349,9 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "octo-sable",
+    groupe: "octo",
+    coloris: "Sable",
+    pastille: "#cdb07c",
     family: "octo",
     name: "Octo (1) Sable",
     ref: "PT-O1-SB",
@@ -333,6 +369,9 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "rond-nuit",
+    groupe: "rond-index",
+    coloris: "Bleu nuit",
+    pastille: "#2d5fb8",
     family: "rond",
     name: "Rond (1) Nuit",
     ref: "PT-R1-NT",
@@ -350,6 +389,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "parcours-urbain",
+    coloris: "Titane",
+    pastille: "#b9b8b2",
     family: "parcours",
     name: "Parcours (1) Urbain",
     ref: "PT-P1-UR",
@@ -373,6 +414,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "parcours-desert",
+    coloris: "Bronze",
+    pastille: "#b77a4f",
     family: "parcours",
     name: "Parcours (1) Désert",
     ref: "PT-P1-DS",
@@ -396,6 +439,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "parcours-montagne",
+    coloris: "Olive",
+    pastille: "#5b6b35",
     family: "parcours",
     name: "Parcours (1) Montagne",
     ref: "PT-P1-MT",
@@ -419,6 +464,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "parcours-foret",
+    coloris: "Sauge",
+    pastille: "#93a88a",
     family: "parcours",
     name: "Parcours (1) Forêt",
     ref: "PT-P1-FR",
@@ -442,6 +489,8 @@ export const catalogue: readonly Model[] = [
   },
   {
     slug: "parcours-cosmos",
+    coloris: "Noir",
+    pastille: "#1a1a1d",
     family: "parcours",
     name: "Parcours (1) Cosmos",
     ref: "PT-P1-CS",
@@ -482,6 +531,12 @@ export function tailleOf(model: Model): number {
 
 export function silhouetteOf(model: Model): FamilyId {
   return model.silhouette ?? model.family;
+}
+
+/** Toutes les déclinaisons d'une montre, elle-même comprise. */
+export function colorways(model: Model): Model[] {
+  if (!model.groupe) return [model];
+  return catalogue.filter((item) => item.groupe === model.groupe);
 }
 
 export function findModel(slug: string): Model | undefined {

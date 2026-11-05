@@ -3,6 +3,7 @@ import { vendeur } from "@/content/vendeur";
 
 const links = [
   { href: "/montres", label: "Toutes les montres" },
+  { href: "/favoris", label: "Mes favoris" },
   { href: "/garantie", label: "Garantie, retours et rétractation" },
   { href: "/marque", label: "Marque et brevet" },
   { href: "/cgv", label: "Conditions générales de vente" },

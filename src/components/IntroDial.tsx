@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const ticks = Array.from({ length: 60 }, (_, index) => index);
 
 /** Durée d'affichage du cadran. À garder alignée sur .intro-hand dans globals.css. */
-const HOLD_MS = 2000;
+const HOLD_MS = 1500;
 
 /**
  * Cadran joué à chaque chargement ou rechargement de page. Il disparaît par

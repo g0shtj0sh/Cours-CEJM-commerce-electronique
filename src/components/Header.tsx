@@ -1,8 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import Popover from "@/components/Popover";
+import SiteMenu from "@/components/SiteMenu";
+import Tip from "@/components/Tip";
 import {
+  ArrowLeftIcon,
   BagIcon,
   ChevronIcon,
   HeartIcon,
@@ -16,51 +20,39 @@ const nav = [
   { id: "marque", href: "/marque", label: "La marque" },
 ] as const;
 
-const menu = [
-  { href: "/", label: "Accueil" },
-  { href: "/montres", label: "Toutes les montres" },
-  { href: "/garantie", label: "Garantie, retours et rétractation" },
-  { href: "/marque", label: "Marque et brevet" },
-  { href: "/cgv", label: "Conditions générales de vente" },
-  { href: "/mentions-legales", label: "Mentions légales" },
-];
-
 type Active = (typeof nav)[number]["id"];
 
 export default function Header({ active }: { active?: Active }) {
   const { lines } = useCart();
   const { slugs } = useFavorites();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const goBack = () => {
+    if (window.history.length > 1) router.back();
+    else router.push("/");
+  };
 
   return (
     <header className="pad relative z-40 flex items-center justify-between gap-4 pt-8 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:pt-11">
-      <div className="flex items-center gap-7">
+      <div className="flex items-center gap-4 lg:gap-6">
+        {pathname !== "/" ? (
+          <Tip label="Retour">
+            <button
+              type="button"
+              aria-label="Revenir à la page précédente"
+              onClick={goBack}
+              className="flex size-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+            >
+              <ArrowLeftIcon />
+            </button>
+          </Tip>
+        ) : null}
         <Link href="/" className="matrix flex items-start text-[1.75rem]">
           POINT
-          <span className="mt-0.5 ml-0.5 font-sans text-[0.625rem] font-semibold">
-            ®
-          </span>
+          <span className="mt-0.5 ml-0.5 font-sans text-[0.625rem] font-semibold">®</span>
         </Link>
-        <Popover
-          label="Ouvrir le menu"
-          triggerClassName="flex"
-          trigger={
-            <span className="flex h-5 w-5 flex-col justify-center gap-1.5" aria-hidden>
-              <span className="h-px bg-ink" />
-              <span className="h-px bg-ink" />
-              <span className="h-px bg-ink" />
-            </span>
-          }
-        >
-          <ul className="space-y-2.5">
-            {menu.map((item) => (
-              <li key={item.href}>
-                <Link className="hover:text-accent" href={item.href}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Popover>
+        <SiteMenu />
       </div>
 
       <nav aria-label="Navigation principale" className="hidden lg:block">
@@ -107,25 +99,26 @@ export default function Header({ active }: { active?: Active }) {
           </Popover>
         </div>
 
-        <Link href="/montres#favoris" aria-label={`Favoris : ${slugs.length}`} className="relative">
-          <HeartIcon filled={slugs.length > 0} />
-          {slugs.length > 0 ? <Count value={slugs.length} /> : null}
-        </Link>
+        <Tip label="Mes favoris">
+          <Link href="/favoris" aria-label={`Favoris : ${slugs.length}`} className="relative flex">
+            <HeartIcon filled={slugs.length > 0} />
+            {slugs.length > 0 ? <Count value={slugs.length} /> : null}
+          </Link>
+        </Tip>
 
-        <Popover
-          label="Compte"
-          align="right"
-          triggerClassName="flex"
-          trigger={<UserIcon />}
-        >
-          Pas besoin de compte : vous commandez directement, avec votre adresse
-          de livraison.
-        </Popover>
+        <Tip label="Mon compte">
+          <Popover label="Compte" align="right" triggerClassName="flex" trigger={<UserIcon />}>
+            Pas besoin de compte : vous commandez directement, avec votre adresse
+            de livraison.
+          </Popover>
+        </Tip>
 
-        <Link href="/panier" aria-label={`Panier : ${lines.length} article(s)`} className="relative">
-          <BagIcon />
-          {lines.length > 0 ? <Count value={lines.length} /> : null}
-        </Link>
+        <Tip label="Mon panier" side="bottom-end">
+          <Link href="/panier" aria-label={`Panier : ${lines.length} article(s)`} className="relative flex">
+            <BagIcon />
+            {lines.length > 0 ? <Count value={lines.length} /> : null}
+          </Link>
+        </Tip>
       </div>
     </header>
   );

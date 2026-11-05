@@ -1,7 +1,8 @@
 # Prompts pour générer les images POINT avec ChatGPT
 
 **Où on en est :** les 18 montres et les 3 cartes de l'accueil sont en place. Il reste
-seulement, en option, les mises en scène d'Octo Noir et de Rond Nuit (bloc 4).
+seulement, en option, les mises en scène d'Octo Noir et de Rond Nuit (bloc 4) et les
+coloris supplémentaires (bloc 6).
 
 Dans ChatGPT, joins **ton image de la page sombre** et **tes images de montres**
 (toutes celles que tu as déjà), puis colle
@@ -121,6 +122,31 @@ même ambiance que mes autres images.
 
 Contraintes : format 4:3, aucun texte, aucune lettre, aucun chiffre, aucun logo.
 Garde tout le quart inférieur très sombre et sans détail, car j'y place du texte.
+```
+
+---
+
+## Bloc 6 — Coloris supplémentaires
+
+Sur une fiche, les pastilles ne proposent que de vraies déclinaisons. Ces 10 montres
+n'ont qu'un coloris pour l'instant. Une image chacune suffit pour leur en donner deux.
+Fond transparent, même angle et même éclairage que l'image d'origine.
+
+```text
+Reprends exactement la montre que je te donne en pièce jointe : même forme, même
+angle, même éclairage, même écran, sur fond transparent. Seule la couleur change.
+Génère une image à la fois.
+
+1. octo-orange-noir.png : Octo orange avec un bracelet noir.
+2. rond-maille-or.png : Rond maille avec une maille milanaise dorée.
+3. rond-orbite-argent.png : Rond orbite, boîtier et maille milanaise argent.
+4. ligne-cobalt-bordeaux.png : Ligne cobalt avec un bracelet tissé bordeaux.
+5. ligne-cristal-fume.png : Ligne cristal, boîtier fumé et bracelet noir translucide.
+6. parcours-urbain-noir.png : Parcours urbain, boîtier et bracelet en titane noirci.
+7. parcours-desert-noir.png : Parcours désert, boîtier en acier et cuir noir.
+8. parcours-montagne-noir.png : Parcours montagne, boîtier noir et nylon noir.
+9. parcours-foret-sable.png : Parcours forêt avec un bracelet sable.
+10. parcours-cosmos-argent.png : Parcours cosmos, boîtier et maille argent.
 ```
 
 ---

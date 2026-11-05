@@ -7,7 +7,11 @@ export const metadata: Metadata = { title: "Garantie et service" };
 
 export default function GarantiePage() {
   return (
-    <LegalPage title="Garantie & service" active="garantie">
+    <LegalPage
+      title="Garantie & service"
+      active="garantie"
+      wide={<GuaranteeBox lines={encadreGarantie} />}
+    >
       <LegalSection title="Livraison">
         <p>
           Livraison incluse dans le prix, par {livraison.transporteur}, en{" "}
@@ -74,10 +78,6 @@ export default function GarantiePage() {
           fabrication, en plus des garanties légales et sans les remplacer. Pour en
           bénéficier, appelez le {vendeur.telephone}, {vendeur.horaires}.
         </p>
-      </LegalSection>
-
-      <LegalSection title="Garanties légales">
-        <GuaranteeBox lines={encadreGarantie} />
       </LegalSection>
     </LegalPage>
   );

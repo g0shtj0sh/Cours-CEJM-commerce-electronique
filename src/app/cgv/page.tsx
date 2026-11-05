@@ -6,15 +6,15 @@ export const metadata: Metadata = { title: "Conditions générales de vente" };
 
 export default function CgvPage() {
   return (
-    <LegalPage title="Conditions générales de vente">
+    <LegalPage
+      title="Conditions générales de vente"
+      wide={<GuaranteeBox lines={encadreGarantie} />}
+    >
       {cgv.map(([title, text]) => (
         <LegalSection key={title} title={title}>
           <p>{text}</p>
         </LegalSection>
       ))}
-      <LegalSection title="Garanties légales">
-        <GuaranteeBox lines={encadreGarantie} />
-      </LegalSection>
     </LegalPage>
   );
 }

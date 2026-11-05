@@ -2,14 +2,22 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Surface } from "@/components/Shared";
 
-/** Gabarit commun des pages d'information. */
+/**
+ * Gabarit des pages d'information. Le texte se répartit en colonnes pour
+ * occuper toute la largeur ; `wide` reçoit les blocs à afficher en pleine
+ * largeur en dessous, et `columns={false}` laisse la page gérer sa mise en page.
+ */
 export default function LegalPage({
   title,
   active,
+  columns = true,
+  wide,
   children,
 }: {
   title: string;
   active?: "garantie" | "marque";
+  columns?: boolean;
+  wide?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
@@ -19,10 +27,15 @@ export default function LegalPage({
         <div className="relative">
           <Header active={active} />
           <main className="pad pt-10 pb-16">
-            <h1 className="matrix max-w-[16ch] text-[clamp(2.25rem,4.5vw,3.75rem)]">
-              {title}
-            </h1>
-            <div className="mt-10 max-w-3xl space-y-10">{children}</div>
+            <h1 className="matrix text-[clamp(2.25rem,4.5vw,3.75rem)]">{title}</h1>
+            {columns ? (
+              <div className="mt-10 lg:columns-2 lg:gap-14 2xl:columns-3 [&>*]:mb-10 [&>*]:break-inside-avoid">
+                {children}
+              </div>
+            ) : (
+              <div className="mt-10 space-y-10">{children}</div>
+            )}
+            {wide}
           </main>
         </div>
       </div>
@@ -43,17 +56,22 @@ export function LegalSection({
   return (
     <section id={id} className="scroll-mt-8">
       <h2 className="text-lg font-semibold">{title}</h2>
-      <div className="copy mt-2 space-y-3">{children}</div>
+      <div className="copy mt-2 max-w-none space-y-3">{children}</div>
     </section>
   );
 }
 
 export function GuaranteeBox({ lines }: { lines: readonly string[] }) {
   return (
-    <div className="space-y-3 rounded-panel border border-line p-6 text-sm leading-relaxed text-muted">
-      {lines.map((line) => (
-        <p key={line}>{line}</p>
-      ))}
-    </div>
+    <section className="rounded-panel border border-line p-6 lg:p-8">
+      <h2 className="text-lg font-semibold">Garanties légales</h2>
+      <div className="mt-4 text-sm leading-relaxed text-muted lg:columns-2 lg:gap-12 2xl:columns-3">
+        {lines.map((line) => (
+          <p key={line} className="mb-3 break-inside-avoid">
+            {line}
+          </p>
+        ))}
+      </div>
+    </section>
   );
 }

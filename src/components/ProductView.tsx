@@ -6,13 +6,14 @@ import { useState } from "react";
 import { DocumentIcon, HeartIcon, ShareIcon } from "@/components/Icons";
 import Header from "@/components/Header";
 import {
-  ModelSwitcher,
   SeriesBadge,
   Surface,
   WatchImage,
   ambientStyle,
 } from "@/components/Shared";
+import Tip from "@/components/Tip";
 import {
+  colorways,
   descriptif,
   euros,
   specs,
@@ -37,13 +38,22 @@ export default function ProductView({
   const [shared, setShared] = useState(false);
 
   const available = model.stock > 0;
-  const index = models.findIndex((item) => item.slug === model.slug);
-  const previous = models[(index - 1 + models.length) % models.length];
-  const next = models[(index + 1) % models.length];
-  const others = models.filter(
-    (item) => item.slug !== model.slug && item.family === model.family,
+  const isFavorite = slugs.includes(model.slug);
+
+  /** Les déclinaisons de cette montre : elles passent par le choix du coloris. */
+  const colors = colorways(model).filter((color) =>
+    models.some((item) => item.slug === color.slug),
   );
-  const suggestions = (others.length ? others : models.filter((item) => item.slug !== model.slug)).slice(0, 3);
+
+  /** D'autres montres de la même famille, sans refaire le tour de la gamme. */
+  const suggestions = models
+    .filter(
+      (item) =>
+        item.family === model.family &&
+        !colors.some((color) => color.slug === item.slug),
+    )
+    .slice(0, 3);
+
   const text = descriptif(model);
   const firstStop = text.indexOf(". ") + 1;
 
@@ -80,7 +90,7 @@ export default function ProductView({
                 </h1>
               </div>
 
-              <div className="relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-16 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
+              <div className="relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-6 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
                 <WatchImage
                   slug={model.slug}
                   name={model.name}
@@ -97,6 +107,36 @@ export default function ProductView({
                   <p className="mt-1 text-xs text-muted">
                     Livraison incluse, sous {livraison.delai}
                   </p>
+
+                  <div className="mt-4">
+                    <p className="label text-muted">
+                      Coloris <span className="ml-1 text-ink">{model.coloris}</span>
+                    </p>
+                    <div role="group" aria-label="Choisir un coloris" className="mt-2 flex gap-2.5">
+                      {colors.map((color) => (
+                        <Tip key={color.slug} label={color.coloris}>
+                          <Link
+                            href={`/montres/${color.slug}`}
+                            scroll={false}
+                            aria-label={`Coloris ${color.coloris}`}
+                            aria-current={color.slug === model.slug ? "true" : undefined}
+                            className={[
+                              "flex size-8 items-center justify-center rounded-full border transition-colors",
+                              color.slug === model.slug
+                                ? "border-[var(--accent)]"
+                                : "border-transparent hover:border-muted",
+                            ].join(" ")}
+                          >
+                            <span
+                              className="size-6 rounded-full ring-1 ring-white/25"
+                              style={{ backgroundColor: color.pastille }}
+                            />
+                          </Link>
+                        </Tip>
+                      ))}
+                    </div>
+                  </div>
+
                   <label className="mt-4 block w-44">
                     <span className="label text-muted">Taille du bracelet</span>
                     <select
@@ -122,36 +162,31 @@ export default function ProductView({
                 </div>
 
                 <div className="flex gap-5 lg:flex-col">
-                  <button
-                    type="button"
-                    aria-label="Ajouter aux favoris"
-                    aria-pressed={slugs.includes(model.slug)}
-                    onClick={() => toggle(model.slug)}
-                  >
-                    <HeartIcon filled={slugs.includes(model.slug)} />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={shared ? "Lien copié" : "Copier le lien"}
-                    title={shared ? "Lien copié" : "Copier le lien"}
-                    onClick={share}
-                  >
-                    <ShareIcon />
-                  </button>
-                  <a href="#fiche" aria-label="Lire la fiche détaillée">
-                    <DocumentIcon />
-                  </a>
+                  <Tip label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"} side="left">
+                    <button
+                      type="button"
+                      aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                      aria-pressed={isFavorite}
+                      onClick={() => toggle(model.slug)}
+                    >
+                      <HeartIcon filled={isFavorite} />
+                    </button>
+                  </Tip>
+                  <Tip label={shared ? "Lien copié" : "Copier le lien"} side="left">
+                    <button
+                      type="button"
+                      aria-label={shared ? "Lien copié" : "Copier le lien"}
+                      onClick={share}
+                    >
+                      <ShareIcon />
+                    </button>
+                  </Tip>
+                  <Tip label="Lire le descriptif" side="left">
+                    <a href="#fiche" aria-label="Lire le descriptif">
+                      <DocumentIcon />
+                    </a>
+                  </Tip>
                 </div>
-              </div>
-
-              <div className="relative z-10 mt-8">
-                <ModelSwitcher
-                  count={models.length}
-                  active={index}
-                  previous={previous.name}
-                  next={next.name}
-                  onSelect={(target) => router.push(`/montres/${models[target].slug}`)}
-                />
               </div>
             </main>
           </div>
@@ -168,34 +203,36 @@ export default function ProductView({
             <p className="text-sm leading-relaxed text-muted">{text.slice(firstStop)}</p>
           </div>
 
-          <div className="flex justify-between gap-6">
-            <div>
-              <p className="label">
-                Autres <span className="text-muted">modèles</span>
-              </p>
-              <ul className="mt-4 space-y-1.5">
+          {suggestions.length > 0 ? (
+            <div className="flex justify-between gap-6">
+              <div>
+                <p className="label">
+                  Même <span className="text-muted">famille</span>
+                </p>
+                <ul className="mt-4 space-y-1.5">
+                  {suggestions.map((item) => (
+                    <li key={item.slug}>
+                      <Link className="label text-muted hover:text-ink" href={`/montres/${item.slug}`}>
+                        {item.ref}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex gap-4">
                 {suggestions.map((item) => (
-                  <li key={item.slug}>
-                    <Link className="label text-muted hover:text-ink" href={`/montres/${item.slug}`}>
-                      {item.ref}
-                    </Link>
-                  </li>
+                  <Link
+                    key={item.slug}
+                    href={`/montres/${item.slug}`}
+                    aria-label={item.name}
+                    className="relative size-20 lg:size-24"
+                  >
+                    <WatchImage slug={item.slug} name={item.name} sizes="96px" />
+                  </Link>
                 ))}
-              </ul>
+              </div>
             </div>
-            <div className="flex gap-4">
-              {suggestions.map((item) => (
-                <Link
-                  key={item.slug}
-                  href={`/montres/${item.slug}`}
-                  aria-label={item.name}
-                  className="relative size-20 lg:size-24"
-                >
-                  <WatchImage slug={item.slug} name={item.name} sizes="96px" />
-                </Link>
-              ))}
-            </div>
-          </div>
+          ) : null}
         </section>
       </div>
 

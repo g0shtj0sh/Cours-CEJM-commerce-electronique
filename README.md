@@ -24,6 +24,7 @@ Puis <http://localhost:3000>. Autres commandes : `npm run build`, `npm run lint`
 | `/` | Accueil, carrousel dont l'ambiance suit le modèle |
 | `/montres` | Collection avec filtres, par famille |
 | `/montres/[slug]` | Fiche produit, descriptif et informations avant commande |
+| `/favoris` | Montres mises en favori |
 | `/panier` | Panier, TVA et total TTC |
 | `/commande` | Coordonnées, vérification, paiement simulé, confirmation |
 | `/garantie` | Livraison, rétractation, formulaire type, garanties |

@@ -55,6 +55,14 @@ export function DocumentIcon({ className = "size-5" }: IconProps) {
   );
 }
 
+export function ArrowLeftIcon({ className = "size-4" }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M19 12H5M11 6l-6 6 6 6" />
+    </svg>
+  );
+}
+
 export function ChevronIcon({ className = "size-3" }: IconProps) {
   return (
     <svg {...base} className={className}>

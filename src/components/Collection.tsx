@@ -1,13 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { SearchIcon } from "@/components/Icons";
-import { SeriesBadge, WatchImage, ambientStyle } from "@/components/Shared";
+import ProductCard from "@/components/ProductCard";
+import Tip from "@/components/Tip";
 import {
   catalogue,
-  euros,
   families,
   silhouetteOf,
   tailleOf,
@@ -15,7 +14,6 @@ import {
   type Model,
 } from "@/content/catalogue";
 import type { ShopModel } from "@/lib/catalogue.server";
-import { useFavorites } from "@/lib/stores";
 
 const shapes: { id: Exclude<FamilyId, "parcours">; label: string; path: React.ReactNode }[] = [
   { id: "carre", label: "Carré", path: <rect x="7" y="7" width="10" height="10" rx="2.5" /> },
@@ -39,51 +37,6 @@ function FilterLabel({ name, value }: { name: string; value?: string }) {
     <p className="label">
       {name} {value ? <span className="ml-1 text-accent">{value}</span> : null}
     </p>
-  );
-}
-
-function ProductCard({ model }: { model: ShopModel }) {
-  const body = (
-    <>
-      <div className="flex items-center justify-between gap-2 p-5 pb-0">
-        <SeriesBadge serie={model.serie} muted={!model.ready} />
-        {model.ready && model.stock === 0 ? (
-          <p className="label text-muted">Épuisé</p>
-        ) : null}
-      </div>
-      <div className="relative mx-6 aspect-[5/4]">
-        {model.ready ? (
-          <WatchImage
-            slug={model.slug}
-            name={model.name}
-            sizes="(min-width: 768px) 28vw, 80vw"
-          />
-        ) : (
-          <p className="matrix absolute inset-0 flex items-center justify-center text-4xl text-dim">
-            Bientôt
-          </p>
-        )}
-      </div>
-      <div className="flex items-end justify-between gap-4 p-6 pt-3">
-        <div>
-          <p className="label text-muted">{model.ref}</p>
-          <p className="label mt-1">{model.name}</p>
-        </div>
-        <p className="label whitespace-nowrap text-accent">
-          {model.ready ? `${euros(model.priceCents)} TTC` : "Prochainement"}
-        </p>
-      </div>
-    </>
-  );
-
-  return model.ready ? (
-    <Link href={`/montres/${model.slug}`} className="card block" style={ambientStyle(model)}>
-      {body}
-    </Link>
-  ) : (
-    <div className="card" style={ambientStyle(model)}>
-      {body}
-    </div>
   );
 }
 
@@ -112,10 +65,10 @@ function ParcoursBanner() {
   );
 }
 
-/** Rangée qui défile à l'horizontale : la carte suivante dépasse, comme dans la vidéo. */
+/** Rangée à défilement horizontal, avec une barre aux couleurs du site. */
 function CardRow({ models }: { models: ShopModel[] }) {
   return (
-    <div className="-mr-[var(--pad)] mt-6 flex snap-x gap-6 overflow-x-auto pr-[var(--pad)] pb-2 [scrollbar-width:none]">
+    <div className="rail -mr-[var(--pad)] mt-6 flex snap-x gap-6 overflow-x-auto pr-[var(--pad)] pb-5">
       {models.map((model) => (
         <div key={model.slug} className="w-[85%] shrink-0 snap-start md:w-[46%] lg:w-[31%]">
           <ProductCard model={model} />
@@ -131,21 +84,17 @@ export default function Collection({ models }: { models: ShopModel[] }) {
   const [material, setMaterial] = useState<Model["matiere"] | null>(null);
   const [search, setSearch] = useState("");
   const [searching, setSearching] = useState(false);
-  const { slugs } = useFavorites();
 
   const visible = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return models.filter((model) => {
-      return (
+    return models.filter(
+      (model) =>
         (!shape || silhouetteOf(model) === shape) &&
         (!size || tailleOf(model) === size) &&
         (!material || model.matiere === material) &&
-        (!query || `${model.name} ${model.ref}`.toLowerCase().includes(query))
-      );
-    });
+        (!query || `${model.name} ${model.ref}`.toLowerCase().includes(query)),
+    );
   }, [models, shape, size, material, search]);
-
-  const favorites = models.filter((model) => slugs.includes(model.slug));
 
   return (
     <main className="pad relative pt-8 pb-16">
@@ -156,21 +105,22 @@ export default function Collection({ models }: { models: ShopModel[] }) {
           <FilterLabel name="Forme" value={shapes.find((item) => item.id === shape)?.label} />
           <div className="mt-3 flex gap-2.5">
             {shapes.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-label={item.label}
-                aria-pressed={shape === item.id}
-                onClick={() => setShape(shape === item.id ? null : item.id)}
-                className={[
-                  "flex size-10 items-center justify-center rounded-full transition-colors",
-                  shape === item.id ? "bg-[var(--accent)] text-night" : "bg-white/10 text-ink",
-                ].join(" ")}
-              >
-                <svg viewBox="5 5 14 14" className="size-5" fill="currentColor" aria-hidden>
-                  {item.path}
-                </svg>
-              </button>
+              <Tip key={item.id} label={item.label}>
+                <button
+                  type="button"
+                  aria-label={item.label}
+                  aria-pressed={shape === item.id}
+                  onClick={() => setShape(shape === item.id ? null : item.id)}
+                  className={[
+                    "flex size-10 items-center justify-center rounded-full transition-colors",
+                    shape === item.id ? "bg-[var(--accent)] text-night" : "bg-white/10 text-ink",
+                  ].join(" ")}
+                >
+                  <svg viewBox="5 5 14 14" className="size-5" fill="currentColor" aria-hidden>
+                    {item.path}
+                  </svg>
+                </button>
+              </Tip>
             ))}
           </div>
         </div>
@@ -202,23 +152,23 @@ export default function Collection({ models }: { models: ShopModel[] }) {
           <FilterLabel name="Bracelet" value={material ?? undefined} />
           <div className="mt-3 flex gap-2.5">
             {materials.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                title={item.id}
-                aria-label={item.id}
-                aria-pressed={material === item.id}
-                onClick={() => setMaterial(material === item.id ? null : item.id)}
-                className="flex size-10 items-center justify-center rounded-full bg-white/10"
-              >
-                <span
-                  className={[
-                    "rounded-full transition-all",
-                    material === item.id ? "size-9" : "size-5",
-                  ].join(" ")}
-                  style={{ backgroundColor: item.color }}
-                />
-              </button>
+              <Tip key={item.id} label={item.id}>
+                <button
+                  type="button"
+                  aria-label={item.id}
+                  aria-pressed={material === item.id}
+                  onClick={() => setMaterial(material === item.id ? null : item.id)}
+                  className="flex size-10 items-center justify-center rounded-full bg-white/10"
+                >
+                  <span
+                    className={[
+                      "rounded-full transition-all",
+                      material === item.id ? "size-9" : "size-5",
+                    ].join(" ")}
+                    style={{ backgroundColor: item.color }}
+                  />
+                </button>
+              </Tip>
             ))}
           </div>
         </div>
@@ -235,24 +185,19 @@ export default function Collection({ models }: { models: ShopModel[] }) {
               className="field w-48 rounded-full"
             />
           ) : null}
-          <button
-            type="button"
-            aria-label="Rechercher"
-            aria-expanded={searching}
-            onClick={() => setSearching((value) => !value)}
-            className="flex size-10 items-center justify-center rounded-full bg-white/10"
-          >
-            <SearchIcon />
-          </button>
+          <Tip label="Rechercher" side="bottom-end">
+            <button
+              type="button"
+              aria-label="Rechercher"
+              aria-expanded={searching}
+              onClick={() => setSearching((value) => !value)}
+              className="flex size-10 items-center justify-center rounded-full bg-white/10"
+            >
+              <SearchIcon />
+            </button>
+          </Tip>
         </div>
       </div>
-
-      {favorites.length > 0 ? (
-        <section id="favoris" className="mt-14">
-          <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">Favoris</h2>
-          <CardRow models={favorites} />
-        </section>
-      ) : null}
 
       {families.map((family) => {
         const rows = visible.filter((model) => model.family === family.id);
