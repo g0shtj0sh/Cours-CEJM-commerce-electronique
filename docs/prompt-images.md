@@ -1,8 +1,7 @@
 # Prompts pour générer les images POINT avec ChatGPT
 
-**Où on en est :** les 18 montres, dont la collection Parcours, et les 3 cartes de
-l'accueil sont en place. Il reste la nouvelle image de la carte « Pourquoi POINT » (bloc 5) et, en option, les mises
-en scène de la fin du bloc 4.
+**Où on en est :** les 18 montres et les 3 cartes de l'accueil sont en place. Il reste
+seulement, en option, les mises en scène d'Octo Noir et de Rond Nuit (bloc 4).
 
 Dans ChatGPT, joins **ton image de la page sombre** et **tes images de montres**
 (toutes celles que tu as déjà), puis colle

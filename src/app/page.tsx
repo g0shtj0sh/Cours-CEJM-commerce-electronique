@@ -1,11 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import { VEDETTE } from "@/content/catalogue";
 import HomeHero from "@/components/HomeHero";
 import { editorialImage, shopModels } from "@/lib/catalogue.server";
 
 export default function Home() {
-  const models = shopModels().filter((model) => model.ready);
+  const models = shopModels()
+    .filter((model) => model.ready)
+    .sort((a, b) => Number(b.slug === VEDETTE) - Number(a.slug === VEDETTE));
 
   const stories = [
     {
@@ -17,7 +20,7 @@ export default function Home() {
     {
       href: "/montres",
       title: "La gamme",
-      text: "Parcours, Carré, Octo, Rond et Ligne, en séries limitées.",
+      text: "Carré, Octo, Rond, Ligne et Parcours, en séries limitées.",
       image: editorialImage("editorial-gamme.webp", "rond-cuivre-scene.webp"),
     },
     {

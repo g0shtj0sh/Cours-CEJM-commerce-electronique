@@ -11,7 +11,7 @@ export default function MarquePage() {
         <p>
           Un point est la plus petite unité de nos écrans : quelques centaines
           d&apos;entre eux suffisent à donner l&apos;heure. Nos montres portent un nom simple et un
-          numéro de génération, entre parenthèses : Parcours (1), Carré (1), Octo (1), Rond (1), Ligne (1).
+          numéro de génération, entre parenthèses : Carré (1), Octo (1), Rond (1), Ligne (1), Parcours (1).
         </p>
       </LegalSection>
 
