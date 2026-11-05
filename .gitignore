@@ -42,3 +42,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Images sources : le site utilise uniquement les .webp
+public/images/*.png

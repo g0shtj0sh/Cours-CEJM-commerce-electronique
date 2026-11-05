@@ -84,6 +84,19 @@ function ProductCard({ model }: { model: ShopModel }) {
   );
 }
 
+/** Rangée qui défile à l'horizontale : la carte suivante dépasse, comme dans la vidéo. */
+function CardRow({ models }: { models: ShopModel[] }) {
+  return (
+    <div className="-mr-[var(--pad)] mt-6 flex snap-x gap-6 overflow-x-auto pr-[var(--pad)] pb-2 [scrollbar-width:none]">
+      {models.map((model) => (
+        <div key={model.slug} className="w-[85%] shrink-0 snap-start md:w-[46%] lg:w-[31%]">
+          <ProductCard model={model} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Collection({ models }: { models: ShopModel[] }) {
   const [shape, setShape] = useState<FamilyId | null>(null);
   const [size, setSize] = useState<number | null>(null);
@@ -209,11 +222,7 @@ export default function Collection({ models }: { models: ShopModel[] }) {
       {favorites.length > 0 ? (
         <section id="favoris" className="mt-14">
           <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">Favoris</h2>
-          <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {favorites.map((model) => (
-              <ProductCard key={model.slug} model={model} />
-            ))}
-          </div>
+          <CardRow models={favorites} />
         </section>
       ) : null}
 
@@ -223,11 +232,7 @@ export default function Collection({ models }: { models: ShopModel[] }) {
         return (
           <section key={family.id} className="mt-14">
             <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label}</h2>
-            <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {rows.map((model) => (
-                <ProductCard key={model.slug} model={model} />
-              ))}
-            </div>
+            <CardRow models={rows} />
           </section>
         );
       })}

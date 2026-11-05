@@ -62,10 +62,10 @@ export function Ruler({
   onSelect: (index: number) => void;
 }) {
   return (
-    <div className="flex items-center justify-center gap-1.5" role="group" aria-label="Choisir un modèle">
+    <div className="flex flex-wrap items-center justify-center gap-1.5" role="group" aria-label="Choisir un modèle">
       {Array.from({ length: count }, (_, index) => (
         <div key={index} className="flex items-center gap-1.5">
-          <span className="hidden items-center sm:flex">
+          <span className="hidden items-center 2xl:flex">
             <Ticks bright={index === active} />
           </span>
           <button
@@ -81,7 +81,7 @@ export function Ruler({
             {String(index + 1).padStart(2, "0")}
           </button>
           {index === active ? (
-            <span className="hidden items-center sm:flex">
+            <span className="hidden items-center 2xl:flex">
               <Ticks bright />
             </span>
           ) : null}

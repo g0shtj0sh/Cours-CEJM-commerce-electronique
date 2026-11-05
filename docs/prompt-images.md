@@ -1,5 +1,8 @@
 # Prompts pour générer les images POINT avec ChatGPT
 
+**Où on en est :** les 13 montres et les 3 cartes de l'accueil sont en place. Il reste
+seulement les mises en scène de la fin du bloc 4, facultatives.
+
 Dans ChatGPT, joins **ton image de la page sombre** et **tes images de montres**
 (toutes celles que tu as déjà), puis colle
 le bloc 1. Envoie ensuite les blocs 2, 3 et 4 un par un, dans la même conversation.
@@ -87,7 +90,9 @@ Aucun texte ajouté, aucun visage reconnaissable, aucune marque sauf POINT sur l
 3. editorial-service.png : vue d'atelier, mains gantées qui ouvrent une montre POINT
    avec un petit tournevis, outils d'horloger flous, fond très sombre.
 4. carre-cobalt-scene.png : la montre Carré cobalt posée sur une pierre noire, 3:2.
-5. octo-sable-scene.png : la montre Octo sable posée sur une pierre noire, 3:2.
+5. octo-noir-scene.png : la montre Octo noire posée sur une pierre noire, 3:2.
+6. octo-sable-scene.png : la montre Octo sable posée sur une pierre noire, 3:2.
+7. rond-nuit-scene.png : la montre Rond nuit posée sur une pierre noire, 3:2.
 ```
 
 ---
@@ -105,7 +110,6 @@ Aucun texte ajouté, aucun visage reconnaissable, aucune marque sauf POINT sur l
 
 | Dossier `public/images/` | Rôle |
 | --- | --- |
-| `carre-clair.webp`, `carre-noir.webp`, `octo-olive.webp`, `octo-orange.webp`, `rond-maille.webp`, `rond-cuivre.webp`, `rond-nuit.webp`, `ligne-cobalt.webp`, `ligne-cristal.webp` | Déjà en place, à remplacer si tu veux plus net |
-| `carre-cobalt.webp`, `octo-sable.webp` | Modèles restants : les met en vente |
+| `carre-clair.webp`, `carre-noir.webp`, `carre-cobalt.webp`, `octo-olive.webp`, `octo-orange.webp`, `octo-noir.webp`, `octo-sable.webp`, `rond-maille.webp`, `rond-cuivre.webp`, `rond-nuit.webp`, `rond-orbite.webp`, `ligne-cobalt.webp`, `ligne-cristal.webp` | Les 13 montres, déjà en place |
 | `editorial-marque.webp`, `editorial-gamme.webp`, `editorial-service.webp` | Les 3 cartes de l'accueil |
-| `carre-cobalt-scene.webp`, `octo-sable-scene.webp` | Vignette de l'accueil |
+| `carre-cobalt-scene.webp`, `octo-noir-scene.webp`, `octo-sable-scene.webp`, `rond-nuit-scene.webp` | Vignette de l'accueil, facultatif |

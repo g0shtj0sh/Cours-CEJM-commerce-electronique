@@ -44,6 +44,7 @@ export default function Home() {
                 src={story.image}
                 alt=""
                 fill
+                decoding="sync"
                 sizes="(min-width: 768px) 30vw, 90vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
