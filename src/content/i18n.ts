@@ -55,6 +55,8 @@ const fr = {
     chooseModel: "Choisir un modèle",
     modelN: "Modèle",
     seeCloser: "Voir de près",
+    from: "Dès",
+    variants: (count: number) => `${count} variantes`,
   },
   home: {
     explore: "À découvrir",
@@ -261,6 +263,8 @@ const en: Dictionary = {
     chooseModel: "Choose a model",
     modelN: "Model",
     seeCloser: "See up close",
+    from: "From",
+    variants: (count: number) => `${count} variants`,
   },
   home: {
     explore: "Explore",

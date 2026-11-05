@@ -7,8 +7,10 @@ import { SearchIcon } from "@/components/Icons";
 import ProductCard from "@/components/ProductCard";
 import Tip from "@/components/Tip";
 import {
+  VEDETTE,
   catalogue,
   families,
+  groupByModel,
   matiereLabels,
   silhouetteOf,
   tailleOf,
@@ -49,7 +51,7 @@ function FilterLabel({ name, value }: { name: string; value?: string }) {
 function ParcoursBanner() {
   const t = useT();
   return (
-    <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-panel bg-card md:aspect-[21/9]">
+    <div className="relative aspect-[4/3] overflow-hidden rounded-panel bg-card md:aspect-[21/9] lg:col-span-2 lg:aspect-auto lg:h-full">
       <Image
         src="/images/parcours-collection.webp"
         alt={t.collection.bannerAlt}
@@ -68,17 +70,27 @@ function ParcoursBanner() {
   );
 }
 
+/** Une carte par modèle : `model` est la variante montrée, `variants` toutes les autres. */
+type Entry = { model: ShopModel; variants: ShopModel[] };
+
 /** Rangée à défilement horizontal, avec une barre aux couleurs du site. */
-function CardRow({ models }: { models: ShopModel[] }) {
+function CardRow({ entries }: { entries: Entry[] }) {
+  // Deux cartes ou moins remplissent toute la largeur : pas de vide à droite.
+  const width =
+    entries.length === 1
+      ? "w-full"
+      : entries.length === 2
+        ? "w-[85%] md:w-[calc(50%-0.75rem)]"
+        : "w-[85%] md:w-[46%] lg:w-[calc((100%-3rem)/3)]";
   return (
     <div className="rail -mr-[var(--pad)] mt-6 flex snap-x gap-4 overflow-x-auto pr-[var(--pad)] pb-5 sm:gap-6">
-      {models.map((model, index) => (
+      {entries.map(({ model, variants }, index) => (
         <div
           key={model.slug}
           style={{ "--i": Math.min(index, 4) + 1 } as React.CSSProperties}
-          className="rise w-[85%] shrink-0 snap-start md:w-[46%] lg:w-[31%]"
+          className={`rise shrink-0 snap-start ${width}`}
         >
-          <ProductCard model={model} />
+          <ProductCard model={model} variants={variants} wide={entries.length < 3} />
         </div>
       ))}
     </div>
@@ -96,13 +108,19 @@ export default function Collection({ models }: { models: ShopModel[] }) {
 
   const visible = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return models.filter(
-      (model) =>
-        (!shape || silhouetteOf(model) === shape) &&
-        (!size || tailleOf(model) === size) &&
-        (!material || model.matiere === material) &&
-        (!query || `${model.name} ${model.ref}`.toLowerCase().includes(query)),
-    );
+    const matches = (model: ShopModel) =>
+      (!shape || silhouetteOf(model) === shape) &&
+      (!size || tailleOf(model) === size) &&
+      (!material || model.matiere === material) &&
+      (!query || `${model.name} ${model.ref}`.toLowerCase().includes(query));
+
+    // Un modèle reste visible si l'une de ses variantes convient, et la carte montre celle-là.
+    return groupByModel(models).flatMap((variants) => {
+      const matching = variants.filter(matches);
+      if (matching.length === 0) return [];
+      const model = matching.find((item) => item.slug === VEDETTE) ?? matching[0];
+      return [{ model, variants }];
+    });
   }, [models, shape, size, material, search]);
 
   return (
@@ -214,13 +232,23 @@ export default function Collection({ models }: { models: ShopModel[] }) {
         <h1 className="sr-only">{t.collection.title}</h1>
 
         {families.map((family) => {
-          const rows = visible.filter((model) => model.family === family.id);
+          const rows = visible.filter((entry) => entry.model.family === family.id);
           if (rows.length === 0) return null;
           return (
             <section key={family.id} className="mt-9 scroll-mt-52 first-of-type:mt-6 lg:mt-14">
               <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label[lang]}</h2>
-              {family.id === "parcours" ? <ParcoursBanner /> : null}
-              <CardRow models={rows} />
+              {family.id === "parcours" ? (
+                <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                  <ParcoursBanner />
+                  {rows.map(({ model, variants }) => (
+                    <div key={model.slug} className="rise min-w-0 [--i:1]">
+                      <ProductCard model={model} variants={variants} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <CardRow entries={rows} />
+              )}
             </section>
           );
         })}

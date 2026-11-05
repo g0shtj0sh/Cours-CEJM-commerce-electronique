@@ -587,6 +587,21 @@ export function accroche(model: Model, lang: Lang): string {
   return ACCROCHES[model.groupe ?? model.slug][lang];
 }
 
+/** Nom du modèle, sans celui de la variante : « Bastion » pour « Bastion (Ombre) ». */
+export function nomModele(model: Model): string {
+  return model.name.split(" (")[0];
+}
+
+/** Regroupe les variantes d'un même modèle, dans l'ordre du catalogue. */
+export function groupByModel<T extends Model>(models: T[]): T[][] {
+  const groups = new Map<string, T[]>();
+  for (const model of models) {
+    const key = model.groupe ?? model.slug;
+    groups.set(key, [...(groups.get(key) ?? []), model]);
+  }
+  return [...groups.values()];
+}
+
 /** Modèle affiché en premier sur l'accueil. */
 export const VEDETTE = "carre-noir";
 

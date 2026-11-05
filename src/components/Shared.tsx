@@ -62,18 +62,20 @@ export function SeriesBadge({ serie, muted }: { serie: number; muted?: boolean }
 }
 
 /** Prix d'une carte. En dollars, le prix en euros reste affiché : c'est lui qui est facturé. */
-export function PriceTag({ cents }: { cents: number }) {
+export function PriceTag({ cents, from }: { cents: number; from?: boolean }) {
   const t = useT();
   const price = usePrice();
   if (!price.isUsd) {
     return (
       <span className="whitespace-nowrap tabular-nums">
+        {from ? `${t.common.from} ` : null}
         {price.eur(cents)} {t.common.vat}
       </span>
     );
   }
   return (
     <span className="text-right whitespace-nowrap tabular-nums">
+      {from ? `${t.common.from} ` : null}
       {price.usd(cents)}
       <span className="block text-muted">
         {price.eur(cents)} {t.common.vat}

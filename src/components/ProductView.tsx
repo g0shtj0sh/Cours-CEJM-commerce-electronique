@@ -17,6 +17,8 @@ import {
   accroche,
   colorways,
   descriptif,
+  groupByModel,
+  nomModele,
   specs,
   strapSizes,
 } from "@/content/catalogue";
@@ -54,12 +56,14 @@ export default function ProductView({
   );
 
   /** D'autres montres de la même famille, sans refaire le tour de la gamme. */
-  const suggestions = models
-    .filter(
+  const suggestions = groupByModel(
+    models.filter(
       (item) =>
         item.family === model.family &&
         !variants.some((variant) => variant.slug === item.slug),
-    )
+    ),
+  )
+    .map(([first]) => first)
     .slice(0, 3);
 
   const text = descriptif(model, lang);
@@ -224,7 +228,7 @@ export default function ProductView({
                   {suggestions.map((item) => (
                     <li key={item.slug}>
                       <Link className="label text-muted hover:text-ink" href={`/montres/${item.slug}`}>
-                        {item.name}
+                        {nomModele(item)}
                       </Link>
                     </li>
                   ))}
@@ -235,7 +239,7 @@ export default function ProductView({
                   <Link
                     key={item.slug}
                     href={`/montres/${item.slug}`}
-                    aria-label={item.name}
+                    aria-label={nomModele(item)}
                     className="relative size-20 lg:size-24"
                   >
                     <WatchImage slug={item.slug} name={item.name} sizes="96px" />
