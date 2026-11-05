@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { Model } from "@/content/catalogue";
 import { SwitchIcon } from "@/components/Icons";
+import { usePrice, useT } from "@/lib/settings";
 
 export function ambientStyle(model?: Pick<Model, "ambient" | "accent">) {
   if (!model) return undefined;
@@ -19,11 +22,35 @@ export function Surface() {
 }
 
 export function SeriesBadge({ serie, muted }: { serie: number; muted?: boolean }) {
+  const t = useT();
   return (
     <p className="pill label">
-      <span className={muted ? "text-muted" : "text-accent"}>Série limitée à</span>
-      <span>{serie} pièces</span>
+      <span className={muted ? "text-muted" : "text-accent"}>{t.common.seriesBefore}</span>
+      <span>
+        {serie} {t.common.seriesAfter}
+      </span>
     </p>
+  );
+}
+
+/** Prix d'une carte. En dollars, le prix en euros reste affiché : c'est lui qui est facturé. */
+export function PriceTag({ cents }: { cents: number }) {
+  const t = useT();
+  const price = usePrice();
+  if (!price.isUsd) {
+    return (
+      <span className="whitespace-nowrap">
+        {price.eur(cents)} {t.common.vat}
+      </span>
+    );
+  }
+  return (
+    <span className="text-right whitespace-nowrap">
+      {price.usd(cents)}
+      <span className="block text-muted">
+        {price.eur(cents)} {t.common.vat}
+      </span>
+    </span>
   );
 }
 
@@ -38,10 +65,11 @@ export function WatchImage({
   sizes: string;
   priority?: boolean;
 }) {
+  const t = useT();
   return (
     <Image
       src={`/images/${slug}.webp`}
-      alt={`Montre ${name}`}
+      alt={`${t.common.watch} ${name}`}
       fill
       sizes={sizes}
       priority={priority}
@@ -61,8 +89,13 @@ export function Ruler({
   active: number;
   onSelect: (index: number) => void;
 }) {
+  const t = useT();
   return (
-    <div className="flex flex-wrap items-center justify-center gap-1.5" role="group" aria-label="Choisir un modèle">
+    <div
+      className="flex flex-wrap items-center justify-center gap-1.5"
+      role="group"
+      aria-label={t.common.chooseModel}
+    >
       {Array.from({ length: count }, (_, index) => (
         <div key={index} className="flex items-center gap-1.5">
           <span className="hidden items-center 2xl:flex">
@@ -70,11 +103,11 @@ export function Ruler({
           </span>
           <button
             type="button"
-            aria-label={`Modèle ${index + 1}`}
+            aria-label={`${t.common.modelN} ${index + 1}`}
             aria-current={index === active ? "true" : undefined}
             onClick={() => onSelect(index)}
             className={[
-              "px-0.5 text-[0.6875rem] font-bold",
+              "min-h-6 min-w-6 px-0.5 text-[0.6875rem] font-bold",
               index === active ? "text-ink" : "text-dim hover:text-ink",
             ].join(" ")}
           >
@@ -87,7 +120,6 @@ export function Ruler({
           ) : null}
         </div>
       ))}
-      <Ticks />
     </div>
   );
 }
@@ -102,7 +134,7 @@ function Ticks({ bright }: { bright?: boolean }) {
   );
 }
 
-/** Rangée du bas : modèle précédent, règle, modèle suivant. */
+/** Rangée du bas de l'accueil : modèle précédent, règle, modèle suivant. */
 export function ModelSwitcher({
   count,
   active,
@@ -117,13 +149,13 @@ export function ModelSwitcher({
   onSelect: (index: number) => void;
 }) {
   return (
-    <div className="grid grid-cols-2 items-center gap-y-4 lg:grid-cols-[1fr_auto_1fr]">
+    <div className="grid grid-cols-2 items-center gap-x-4 gap-y-4 lg:grid-cols-[1fr_auto_1fr]">
       <button
         type="button"
         onClick={() => onSelect((active - 1 + count) % count)}
-        className="label flex items-center gap-3 text-muted hover:text-ink"
+        className="label flex items-center gap-3 text-left text-muted hover:text-ink"
       >
-        <SwitchIcon />
+        <SwitchIcon className="size-5 shrink-0" />
         {previous}
       </button>
       <div className="order-last col-span-2 lg:order-none lg:col-span-1">
@@ -135,7 +167,7 @@ export function ModelSwitcher({
         className="label flex items-center justify-end gap-3 text-right text-muted hover:text-ink"
       >
         {next}
-        <SwitchIcon flip />
+        <SwitchIcon className="size-5 shrink-0" flip />
       </button>
     </div>
   );

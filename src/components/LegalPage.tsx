@@ -1,6 +1,9 @@
+"use client";
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Surface } from "@/components/Shared";
+import { useT } from "@/lib/settings";
 
 /**
  * Gabarit des pages d'information. Le texte se répartit en colonnes pour
@@ -56,15 +59,16 @@ export function LegalSection({
   return (
     <section id={id} className="scroll-mt-8">
       <h2 className="text-lg font-semibold">{title}</h2>
-      <div className="copy mt-2 max-w-none space-y-3">{children}</div>
+      <div className="copy mt-2 max-w-none space-y-3 break-words">{children}</div>
     </section>
   );
 }
 
 export function GuaranteeBox({ lines }: { lines: readonly string[] }) {
+  const t = useT();
   return (
-    <section className="rounded-panel border border-line p-6 lg:p-8">
-      <h2 className="text-lg font-semibold">Garanties légales</h2>
+    <section className="rounded-panel border border-line p-5 lg:p-8">
+      <h2 className="text-lg font-semibold">{t.pages.legalGuarantees}</h2>
       <div className="mt-4 text-sm leading-relaxed text-muted lg:columns-2 lg:gap-12 2xl:columns-3">
         {lines.map((line) => (
           <p key={line} className="mb-3 break-inside-avoid">

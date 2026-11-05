@@ -1,4 +1,11 @@
-import { euros, tvaCents } from "@/content/catalogue";
+import { euros, tvaCents, type Lang } from "@/content/catalogue";
+import {
+  cgvEn,
+  encadreGarantieEn,
+  exceptionsRetractationEn,
+  precontractuelEn,
+  proprieteIndustrielleEn,
+} from "@/content/legal-en";
 import { garantie, livraison, vendeur } from "@/content/vendeur";
 
 const { delai, transporteur, zone } = livraison;
@@ -38,6 +45,10 @@ export const cgv = [
   [
     "Objet et champ d'application",
     "Les présentes conditions régissent la vente en ligne des montres POINT par POINT SAS à des consommateurs, c'est-à-dire des personnes physiques qui achètent à un vendeur professionnel à des fins étrangères à leur activité professionnelle. Le site est proposé en français et les livraisons sont limitées à la France métropolitaine : le droit français s'applique.",
+  ],
+  [
+    "Langue et devise",
+    "Le contrat est conclu en français : la version anglaise du site est une traduction de courtoisie et la version française fait foi. Les prix en dollars sont indicatifs, au taux fixe de 1 euro pour 1,10 dollar. Seul le prix en euros est facturé.",
   ],
   [
     "Offre",
@@ -119,3 +130,25 @@ export const proprieteIndustrielle = [
       "Protègent l'apparence des boîtiers Carré, Octo, Rond, Ligne et Tonneau, pour 5 ans renouvelables par périodes de 5 ans, jusqu'à 25 ans.",
   },
 ] as const;
+
+/** Textes légaux dans la langue choisie. L'anglais est une traduction de courtoisie. */
+export function legalContent(lang: Lang) {
+  if (lang === "en") {
+    return {
+      precontractuel: precontractuelEn,
+      exceptions: exceptionsRetractationEn,
+      cgv: cgvEn,
+      encadre: encadreGarantieEn,
+      propriete: proprieteIndustrielleEn,
+      delayText: "3 to 5 working days",
+    };
+  }
+  return {
+    precontractuel,
+    exceptions: exceptionsRetractation,
+    cgv,
+    encadre: encadreGarantie,
+    propriete: proprieteIndustrielle,
+    delayText: delai,
+  };
+}

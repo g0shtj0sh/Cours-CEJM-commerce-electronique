@@ -28,6 +28,18 @@
 }
 
 @layer base {
+  /* Sur les très grands écrans, toute la page grandit avec l'écran. */
+  @media (min-width: 1920px) {
+    html {
+      font-size: 18px;
+    }
+  }
+  @media (min-width: 2400px) {
+    html {
+      font-size: 22px;
+    }
+  }
+
   body {
     background-color: var(--color-night);
     color: var(--color-ink);

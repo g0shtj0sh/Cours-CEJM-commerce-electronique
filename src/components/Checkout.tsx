@@ -2,19 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { euros, findModel, tvaCents } from "@/content/catalogue";
-import { precontractuel } from "@/content/legal";
+import { findModel, tvaCents } from "@/content/catalogue";
+import { legalContent } from "@/content/legal";
 import { livraison, vendeur } from "@/content/vendeur";
+import { usePrice, useSettings, useT } from "@/lib/settings";
 import { useCart } from "@/lib/stores";
 
 type Step = "coordonnees" | "verification" | "paiement" | "confirmation";
 
-const steps: { id: Step; label: string }[] = [
-  { id: "coordonnees", label: "Coordonnées" },
-  { id: "verification", label: "Vérification" },
-  { id: "paiement", label: "Paiement" },
-  { id: "confirmation", label: "Confirmation" },
-];
+const stepIds: Step[] = ["coordonnees", "verification", "paiement", "confirmation"];
 
 type Customer = {
   prenom: string;
@@ -34,13 +30,13 @@ const emptyCustomer: Customer = {
   ville: "",
 };
 
-const fields: { key: keyof Customer; label: string; type?: string; auto: string; wide?: boolean }[] = [
-  { key: "prenom", label: "Prénom", auto: "given-name" },
-  { key: "nom", label: "Nom", auto: "family-name" },
-  { key: "email", label: "Adresse e-mail", type: "email", auto: "email", wide: true },
-  { key: "adresse", label: "Adresse", auto: "street-address", wide: true },
-  { key: "codePostal", label: "Code postal", auto: "postal-code" },
-  { key: "ville", label: "Ville", auto: "address-level2" },
+const fields: { key: keyof Customer; type?: string; auto: string; wide?: boolean }[] = [
+  { key: "prenom", auto: "given-name" },
+  { key: "nom", auto: "family-name" },
+  { key: "email", type: "email", auto: "email", wide: true },
+  { key: "adresse", auto: "street-address", wide: true },
+  { key: "codePostal", auto: "postal-code" },
+  { key: "ville", auto: "address-level2" },
 ];
 
 type Order = {
@@ -51,12 +47,18 @@ type Order = {
 };
 
 export default function Checkout() {
+  const t = useT();
+  const { lang } = useSettings();
+  const price = usePrice();
   const { lines, clear } = useCart();
   const [step, setStep] = useState<Step>("coordonnees");
   const [customer, setCustomer] = useState(emptyCustomer);
   const [newsletter, setNewsletter] = useState(false);
   const [acceptsTerms, setAcceptsTerms] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
+
+  const legal = legalContent(lang);
+  const delay = lang === "en" ? legal.delayText : livraison.delai;
 
   const items = lines.flatMap((line) => {
     const model = findModel(line.slug);
@@ -86,7 +88,7 @@ export default function Checkout() {
     const now = new Date();
     setOrder({
       number: `PT-${String(now.getTime()).slice(-6)}`,
-      date: now.toLocaleDateString("fr-FR", { dateStyle: "long" }),
+      date: now.toLocaleDateString(t.checkout.dateLocale, { dateStyle: "long" }),
       items,
       total,
     });
@@ -97,10 +99,10 @@ export default function Checkout() {
   if (items.length === 0 && !order) {
     return (
       <main className="pad relative pt-10 pb-14">
-        <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">Commande</h1>
-        <p className="copy mt-8">Votre panier est vide : il n&apos;y a rien à commander.</p>
+        <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.checkout.title}</h1>
+        <p className="copy mt-8">{t.checkout.empty}</p>
         <Link className="button mt-6" href="/montres">
-          Voir les montres
+          {t.common.viewWatches}
         </Link>
       </main>
     );
@@ -108,25 +110,22 @@ export default function Checkout() {
 
   return (
     <main className="pad relative pt-10 pb-14">
-      <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">Commande</h1>
+      <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.checkout.title}</h1>
 
       <ol className="mt-7 flex flex-wrap gap-2.5">
-        {steps.map((item, index) => (
+        {stepIds.map((id, index) => (
           <li
-            key={item.id}
-            aria-current={item.id === step ? "step" : undefined}
-            className={[
-              "pill label",
-              item.id === step ? "text-accent" : "text-muted",
-            ].join(" ")}
+            key={id}
+            aria-current={id === step ? "step" : undefined}
+            className={["pill label", id === step ? "text-accent" : "text-muted"].join(" ")}
           >
-            {index + 1}. {item.label}
+            {index + 1}. {t.checkout.steps[id]}
           </li>
         ))}
       </ol>
 
-      <div className="mt-9 grid gap-10 lg:grid-cols-[1fr_22rem]">
-        <div>
+      <div className="mt-9 grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="min-w-0">
           {step === "coordonnees" ? (
             <form
               onSubmit={(event) => {
@@ -137,7 +136,7 @@ export default function Checkout() {
               <div className="grid gap-4 sm:grid-cols-2">
                 {fields.map((field) => (
                   <label key={field.key} className={field.wide ? "sm:col-span-2" : undefined}>
-                    <span className="label text-muted">{field.label}</span>
+                    <span className="label text-muted">{t.checkout.fields[field.key]}</span>
                     <input
                       required
                       className="field mt-1.5"
@@ -152,29 +151,24 @@ export default function Checkout() {
                 ))}
               </div>
 
-              <p className="mt-4 text-sm text-muted">
-                Livraison en {livraison.zone} uniquement.
-              </p>
+              <p className="mt-4 text-sm text-muted">{t.checkout.deliveryOnly}</p>
 
               <label className="mt-6 flex cursor-pointer items-start gap-3 text-sm">
                 <input
                   type="checkbox"
-                  className="mt-0.5 size-4 accent-[var(--accent)]"
+                  className="mt-0.5 size-4 shrink-0 accent-[var(--accent)]"
                   checked={newsletter}
                   onChange={(event) => setNewsletter(event.target.checked)}
                 />
-                <span>
-                  J&apos;accepte de recevoir les offres de POINT par e-mail. Facultatif :
-                  vous pourrez vous désinscrire à tout moment.
-                </span>
+                <span>{t.checkout.newsletter}</span>
               </label>
 
               <div className="mt-7 flex flex-wrap gap-3">
                 <button type="submit" className="button">
-                  Vérifier ma commande
+                  {t.checkout.verify}
                 </button>
                 <Link href="/panier" className="button-ghost">
-                  Retour au panier
+                  {t.checkout.backToCart}
                 </Link>
               </div>
             </form>
@@ -182,16 +176,13 @@ export default function Checkout() {
 
           {step === "verification" ? (
             <div>
-              <h2 className="text-xl font-semibold">Vérifiez votre commande</h2>
-              <p className="copy mt-2">
-                Rien n&apos;est encore commandé. Vérifiez le détail et le prix total,
-                et corrigez si besoin avant de confirmer.
-              </p>
+              <h2 className="text-xl font-semibold">{t.checkout.verifyTitle}</h2>
+              <p className="copy mt-2">{t.checkout.verifyText}</p>
 
               <dl className="mt-6 grid gap-5 sm:grid-cols-2">
                 <div>
-                  <dt className="label text-muted">Livraison à</dt>
-                  <dd className="mt-1 text-sm leading-relaxed">
+                  <dt className="label text-muted">{t.checkout.deliverTo}</dt>
+                  <dd className="mt-1 text-sm leading-relaxed break-words">
                     {customer.prenom} {customer.nom}
                     <br />
                     {customer.adresse}
@@ -200,18 +191,18 @@ export default function Checkout() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="label text-muted">Contact</dt>
-                  <dd className="mt-1 text-sm leading-relaxed">
+                  <dt className="label text-muted">{t.checkout.contact}</dt>
+                  <dd className="mt-1 text-sm leading-relaxed break-words">
                     {customer.email}
                     <br />
-                    Offres par e-mail : {newsletter ? "oui" : "non"}
+                    {t.checkout.offersByEmail} {newsletter ? t.checkout.yes : t.checkout.no}
                   </dd>
                 </div>
               </dl>
 
-              <h3 className="label mt-8">Informations avant commande</h3>
+              <h3 className="label mt-8">{t.checkout.infoTitle}</h3>
               <dl className="mt-3 space-y-3">
-                {precontractuel(total).map(([label, value]) => (
+                {legal.precontractuel(total).map(([label, value]) => (
                   <div key={label} className="grid gap-1 border-t border-line pt-3 text-sm sm:grid-cols-[8rem_1fr]">
                     <dt className="text-muted">{label}</dt>
                     <dd>{value}</dd>
@@ -222,14 +213,14 @@ export default function Checkout() {
               <label className="mt-7 flex cursor-pointer items-start gap-3 text-sm">
                 <input
                   type="checkbox"
-                  className="mt-0.5 size-4 accent-[var(--accent)]"
+                  className="mt-0.5 size-4 shrink-0 accent-[var(--accent)]"
                   checked={acceptsTerms}
                   onChange={(event) => setAcceptsTerms(event.target.checked)}
                 />
                 <span>
-                  J&apos;ai lu et j&apos;accepte les{" "}
+                  {t.checkout.acceptBefore}{" "}
                   <Link className="link" href="/cgv" target="_blank">
-                    conditions générales de vente
+                    {t.checkout.terms}
                   </Link>
                   .
                 </span>
@@ -242,10 +233,10 @@ export default function Checkout() {
                   onClick={() => go("paiement")}
                   className="button"
                 >
-                  Commander avec obligation de paiement
+                  {t.checkout.order}
                 </button>
                 <button type="button" onClick={() => go("coordonnees")} className="button-ghost">
-                  Corriger
+                  {t.checkout.correct}
                 </button>
               </div>
             </div>
@@ -253,96 +244,98 @@ export default function Checkout() {
 
           {step === "paiement" ? (
             <div>
-              <h2 className="text-xl font-semibold">Paiement par carte bancaire</h2>
-              <p className="copy mt-2">
-                Votre banque vous demanderait ici de valider le paiement par
-                authentification forte, par exemple dans son application.
-              </p>
+              <h2 className="text-xl font-semibold">{t.checkout.payTitle}</h2>
+              <p className="copy mt-2">{t.checkout.payText}</p>
               <p className="mt-5 rounded-2xl border border-line p-4 text-sm leading-relaxed">
-                Simulation : aucun numéro de carte n&apos;est demandé et aucun
-                paiement n&apos;est effectué.
+                {t.checkout.payNote}
               </p>
               <button type="button" onClick={pay} className="button mt-6">
-                Simuler le paiement de {euros(total)}
+                {t.checkout.pay} {price.eur(total)}
               </button>
             </div>
           ) : null}
 
           {step === "confirmation" && order ? (
             <div>
-              <h2 className="text-xl font-semibold">Commande confirmée</h2>
-              <p className="copy mt-2">
-                Merci {customer.prenom}. Votre commande {order.number} du {order.date} est
-                enregistrée. Un récapitulatif est envoyé à {customer.email}.
+              <h2 className="text-xl font-semibold">{t.checkout.confirmed}</h2>
+              <p className="copy mt-2 break-words">
+                {t.checkout.thanks(customer.prenom, order.number, order.date, customer.email)}
               </p>
               <dl className="mt-6 space-y-3 text-sm">
                 <div className="border-t border-line pt-3">
-                  <dt className="text-muted">Livraison</dt>
+                  <dt className="text-muted">{t.checkout.delivery}</dt>
                   <dd className="mt-1">
-                    {livraison.transporteur}, sous {livraison.delai}.
+                    {livraison.transporteur}, {t.checkout.deliveryIn} {delay}.
                   </dd>
                 </div>
                 <div className="border-t border-line pt-3">
-                  <dt className="text-muted">Rétractation</dt>
+                  <dt className="text-muted">{t.checkout.withdrawal}</dt>
                   <dd className="mt-1">
-                    Vous avez 14 jours à compter de la réception pour changer d&apos;avis,
-                    sans motif. Le{" "}
+                    {t.checkout.withdrawalBefore}{" "}
                     <Link className="link" href="/garantie#retractation">
-                      formulaire de rétractation
+                      {t.checkout.withdrawalForm}
                     </Link>{" "}
-                    est à votre disposition.
+                    {t.checkout.withdrawalAfter}
                   </dd>
                 </div>
                 <div className="border-t border-line pt-3">
-                  <dt className="text-muted">Une question</dt>
+                  <dt className="text-muted">{t.checkout.question}</dt>
                   <dd className="mt-1">
-                    Appelez le{" "}
+                    {t.checkout.call}{" "}
                     <a className="link" href={`tel:${vendeur.telephoneLien}`}>
                       {vendeur.telephone}
                     </a>
-                    , {vendeur.horaires}.
+                    , {t.legalHours}.
                   </dd>
                 </div>
               </dl>
               <p className="mt-6 rounded-2xl border border-line p-4 text-sm leading-relaxed">
-                Simulation : aucun e-mail n&apos;est envoyé et aucune donnée
-                n&apos;a quitté votre navigateur.
+                {t.checkout.simNote}
               </p>
               <Link className="button mt-6" href="/">
-                Retour à l&apos;accueil
+                {t.checkout.home}
               </Link>
             </div>
           ) : null}
         </div>
 
-        <aside className="h-fit rounded-panel bg-black/45 p-6">
-          <h2 className="label">Récapitulatif</h2>
+        <aside className="h-fit min-w-0 rounded-panel bg-black/45 p-5 sm:p-6">
+          <h2 className="label">{t.checkout.summary}</h2>
           <ul className="mt-4 space-y-3">
             {shown.map((item) => (
               <li key={item.id} className="flex justify-between gap-4 text-sm">
-                <span>
+                <span className="min-w-0">
                   {item.name}
                   <span className="block text-xs text-muted">
-                    {item.ref}, bracelet {item.strapSize}
+                    {item.ref}, {t.checkout.strap} {item.strapSize}
                   </span>
                 </span>
-                <span className="whitespace-nowrap">{euros(item.priceCents)}</span>
+                <span className="whitespace-nowrap">{price.eur(item.priceCents)}</span>
               </li>
             ))}
           </ul>
           <dl className="mt-5 space-y-2 border-t border-line pt-4 text-sm">
-            <div className="flex justify-between text-muted">
-              <dt>Dont TVA (20 %)</dt>
-              <dd>{euros(tva)}</dd>
+            <div className="flex justify-between gap-4 text-muted">
+              <dt>{t.checkout.vat}</dt>
+              <dd>{price.eur(tva)}</dd>
             </div>
-            <div className="flex justify-between text-muted">
-              <dt>Livraison</dt>
-              <dd>Offerte</dd>
+            <div className="flex justify-between gap-4 text-muted">
+              <dt>{t.checkout.delivered}</dt>
+              <dd>{t.checkout.free}</dd>
             </div>
-            <div className="flex justify-between text-base font-bold">
-              <dt>Total TTC</dt>
-              <dd>{euros(total)}</dd>
+            <div className="flex justify-between gap-4 text-base font-bold">
+              <dt>{t.checkout.total}</dt>
+              <dd>{price.eur(total)}</dd>
             </div>
+            {price.isUsd ? (
+              <div className="text-muted">
+                <div className="flex justify-between gap-4">
+                  <dt>{t.checkout.usdTotal}</dt>
+                  <dd>{price.usd(total)}</dd>
+                </div>
+                <p className="mt-1 text-xs">{t.checkout.billed}</p>
+              </div>
+            ) : null}
           </dl>
         </aside>
       </div>

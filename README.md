@@ -35,7 +35,14 @@ Puis <http://localhost:3000>. Autres commandes : `npm run build`, `npm run lint`
 
 - **Modèles, prix, stocks, caractéristiques** : `src/content/catalogue.ts`
 - **Identité du vendeur, livraison** : `src/content/vendeur.ts`
-- **CGV, garanties, propriété industrielle** : `src/content/legal.ts`
+- **Textes de l'interface, français et anglais** : `src/content/i18n.ts`
+- **CGV, garanties, propriété industrielle** : `src/content/legal.ts` et `legal-en.ts`
+
+## Langue et devise
+
+Le site est en français ou en anglais, en euros ou en dollars. POINT ne vend qu'en
+France et ne facture qu'en euros : l'anglais est une traduction de courtoisie et le
+dollar un prix indicatif, au taux fixe défini par `USD_RATE` dans `catalogue.ts`.
 
 ## Images
 

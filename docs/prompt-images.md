@@ -128,8 +128,9 @@ Garde tout le quart inférieur très sombre et sans détail, car j'y place du te
 
 ## Bloc 6 — Coloris supplémentaires
 
-Sur une fiche, les pastilles ne proposent que de vraies déclinaisons. Ces 10 montres
-n'ont qu'un coloris pour l'instant. Une image chacune suffit pour leur en donner deux.
+Sur une fiche, les pastilles ne proposent que de vraies variantes. Ces 5 montres n'ont
+qu'un coloris pour l'instant. Une image chacune suffit pour leur en donner deux. Une
+montre qui gagne une variante prend son nom entre parenthèses : Azimut (Brasier).
 Fond transparent, même angle et même éclairage que l'image d'origine.
 
 ```text
@@ -137,16 +138,11 @@ Reprends exactement la montre que je te donne en pièce jointe : même forme, m�
 angle, même éclairage, même écran, sur fond transparent. Seule la couleur change.
 Génère une image à la fois.
 
-1. octo-orange-noir.png : Octo orange avec un bracelet noir.
-2. rond-maille-or.png : Rond maille avec une maille milanaise dorée.
-3. rond-orbite-argent.png : Rond orbite, boîtier et maille milanaise argent.
-4. ligne-cobalt-bordeaux.png : Ligne cobalt avec un bracelet tissé bordeaux.
-5. ligne-cristal-fume.png : Ligne cristal, boîtier fumé et bracelet noir translucide.
-6. parcours-urbain-noir.png : Parcours urbain, boîtier et bracelet en titane noirci.
-7. parcours-desert-noir.png : Parcours désert, boîtier en acier et cuir noir.
-8. parcours-montagne-noir.png : Parcours montagne, boîtier noir et nylon noir.
-9. parcours-foret-sable.png : Parcours forêt avec un bracelet sable.
-10. parcours-cosmos-argent.png : Parcours cosmos, boîtier et maille argent.
+1. octo-orange-noir.png : Azimut (l'octogonale orange) avec un bracelet noir.
+2. rond-maille-or.png : Halo (la ronde translucide) avec une maille milanaise dorée.
+3. rond-orbite-argent.png : Orbite, boîtier et maille milanaise argent.
+4. ligne-cobalt-bordeaux.png : Pouls avec un bracelet tissé bordeaux.
+5. ligne-cristal-fume.png : Cristal, boîtier fumé et bracelet noir translucide.
 ```
 
 ---

@@ -3,24 +3,23 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import type { ShopModel } from "@/lib/catalogue.server";
+import { useT } from "@/lib/settings";
 import { useFavorites } from "@/lib/stores";
 
 export default function Favorites({ models }: { models: ShopModel[] }) {
+  const t = useT();
   const { slugs, toggle } = useFavorites();
   const favorites = models.filter((model) => slugs.includes(model.slug));
 
   return (
     <main className="pad relative pt-10 pb-16">
-      <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">Favoris</h1>
+      <h1 className="matrix text-[clamp(2.5rem,5vw,4rem)]">{t.favorites.title}</h1>
 
       {favorites.length === 0 ? (
         <div className="mt-8">
-          <p className="copy">
-            Vous n&apos;avez pas encore de favori. Touchez le cœur sur la fiche
-            d&apos;une montre pour la retrouver ici.
-          </p>
+          <p className="copy">{t.favorites.empty}</p>
           <Link className="button mt-6" href="/montres">
-            Voir les montres
+            {t.common.viewWatches}
           </Link>
         </div>
       ) : (
@@ -31,9 +30,9 @@ export default function Favorites({ models }: { models: ShopModel[] }) {
               <button
                 type="button"
                 onClick={() => toggle(model.slug)}
-                className="label mt-3 ml-2 text-muted hover:text-ink"
+                className="label mt-1 ml-2 py-2.5 text-muted hover:text-ink"
               >
-                Retirer des favoris
+                {t.favorites.remove}
               </button>
             </div>
           ))}

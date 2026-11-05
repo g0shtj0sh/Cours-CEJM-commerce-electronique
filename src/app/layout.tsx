@@ -3,6 +3,7 @@ import { Doto, Manrope } from "next/font/google";
 import "./globals.css";
 import IntroDial from "@/components/IntroDial";
 import SmoothScroll from "@/components/SmoothScroll";
+import { LangSync } from "@/lib/settings";
 
 /** Doto pour les titres en matrice de points, Manrope pour tout le reste. */
 const doto = Doto({
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${doto.variable} ${manrope.variable}`}>
       <body>
+        <LangSync />
         <IntroDial />
         <SmoothScroll>{children}</SmoothScroll>
       </body>

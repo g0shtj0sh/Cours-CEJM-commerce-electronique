@@ -8,23 +8,27 @@ import Tip from "@/components/Tip";
 import {
   catalogue,
   families,
+  matiereLabels,
   silhouetteOf,
   tailleOf,
   type FamilyId,
-  type Model,
+  type Matiere,
 } from "@/content/catalogue";
 import type { ShopModel } from "@/lib/catalogue.server";
+import { useSettings, useT } from "@/lib/settings";
 
-const shapes: { id: Exclude<FamilyId, "parcours">; label: string; path: React.ReactNode }[] = [
-  { id: "carre", label: "Carré", path: <rect x="7" y="7" width="10" height="10" rx="2.5" /> },
-  { id: "octo", label: "Octogonal", path: <path d="M9.5 6h5L18 9.5v5L14.5 18h-5L6 14.5v-5L9.5 6Z" /> },
-  { id: "rond", label: "Rond", path: <circle cx="12" cy="12" r="6" /> },
-  { id: "ligne", label: "Allongé", path: <rect x="9" y="5.5" width="6" height="13" rx="3" /> },
+type Shape = Exclude<FamilyId, "parcours">;
+
+const shapes: { id: Shape; path: React.ReactNode }[] = [
+  { id: "carre", path: <rect x="7" y="7" width="10" height="10" rx="2.5" /> },
+  { id: "octo", path: <path d="M9.5 6h5L18 9.5v5L14.5 18h-5L6 14.5v-5L9.5 6Z" /> },
+  { id: "rond", path: <circle cx="12" cy="12" r="6" /> },
+  { id: "ligne", path: <rect x="9" y="5.5" width="6" height="13" rx="3" /> },
 ];
 
 const sizes = [...new Set(catalogue.map(tailleOf))].sort((a, b) => a - b);
 
-const materials: { id: Model["matiere"]; color: string }[] = [
+const materials: { id: Matiere; color: string }[] = [
   { id: "Fluoroélastomère", color: "#e6e1da" },
   { id: "Nylon", color: "#5f6b3c" },
   { id: "Acier", color: "#9b9ea3" },
@@ -40,26 +44,24 @@ function FilterLabel({ name, value }: { name: string; value?: string }) {
   );
 }
 
-/** Présente la collection Parcours, la dernière de la gamme. */
+/** Présente la montre Parcours et ses variantes. */
 function ParcoursBanner() {
+  const t = useT();
   return (
     <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-panel bg-card md:aspect-[21/9]">
       <Image
         src="/images/parcours-collection.webp"
-        alt="Les cinq montres de la collection Parcours"
+        alt={t.collection.bannerAlt}
         fill
         decoding="sync"
         sizes="90vw"
         className="object-cover"
       />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-      <div className="absolute inset-x-6 bottom-5 md:inset-x-8 md:bottom-7">
-        <p className="label text-accent">Nouveau</p>
-        <p className="mt-1 text-lg font-semibold">Votre journée, de A à B.</p>
-        <p className="mt-1 max-w-xl text-sm text-ink/80">
-          Un point orange avance de 00:00 à 23:59 dans cinq décors : montagne,
-          ville, désert, forêt et cosmos.
-        </p>
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+      <div className="absolute inset-x-5 bottom-4 md:inset-x-8 md:bottom-7">
+        <p className="label text-accent">{t.collection.bannerTag}</p>
+        <p className="mt-1 text-lg font-semibold">{t.collection.bannerTitle}</p>
+        <p className="mt-1 max-w-xl text-sm text-ink/80">{t.collection.bannerText}</p>
       </div>
     </div>
   );
@@ -68,7 +70,7 @@ function ParcoursBanner() {
 /** Rangée à défilement horizontal, avec une barre aux couleurs du site. */
 function CardRow({ models }: { models: ShopModel[] }) {
   return (
-    <div className="rail -mr-[var(--pad)] mt-6 flex snap-x gap-6 overflow-x-auto pr-[var(--pad)] pb-5">
+    <div className="rail -mr-[var(--pad)] mt-6 flex snap-x gap-4 overflow-x-auto pr-[var(--pad)] pb-5 sm:gap-6">
       {models.map((model) => (
         <div key={model.slug} className="w-[85%] shrink-0 snap-start md:w-[46%] lg:w-[31%]">
           <ProductCard model={model} />
@@ -79,9 +81,11 @@ function CardRow({ models }: { models: ShopModel[] }) {
 }
 
 export default function Collection({ models }: { models: ShopModel[] }) {
-  const [shape, setShape] = useState<FamilyId | null>(null);
+  const t = useT();
+  const { lang } = useSettings();
+  const [shape, setShape] = useState<Shape | null>(null);
   const [size, setSize] = useState<number | null>(null);
-  const [material, setMaterial] = useState<Model["matiere"] | null>(null);
+  const [material, setMaterial] = useState<Matiere | null>(null);
   const [search, setSearch] = useState("");
   const [searching, setSearching] = useState(false);
 
@@ -98,17 +102,17 @@ export default function Collection({ models }: { models: ShopModel[] }) {
 
   return (
     <main className="pad relative pt-8 pb-16">
-      <h1 className="sr-only">Toutes les montres POINT</h1>
+      <h1 className="sr-only">{t.collection.title}</h1>
 
       <div className="flex flex-wrap items-end gap-x-14 gap-y-6">
         <div>
-          <FilterLabel name="Forme" value={shapes.find((item) => item.id === shape)?.label} />
-          <div className="mt-3 flex gap-2.5">
+          <FilterLabel name={t.collection.shape} value={shape ? t.collection.shapes[shape] : undefined} />
+          <div className="mt-3 flex flex-wrap gap-2.5">
             {shapes.map((item) => (
-              <Tip key={item.id} label={item.label}>
+              <Tip key={item.id} label={t.collection.shapes[item.id]}>
                 <button
                   type="button"
-                  aria-label={item.label}
+                  aria-label={t.collection.shapes[item.id]}
                   aria-pressed={shape === item.id}
                   onClick={() => setShape(shape === item.id ? null : item.id)}
                   className={[
@@ -126,13 +130,13 @@ export default function Collection({ models }: { models: ShopModel[] }) {
         </div>
 
         <div>
-          <FilterLabel name="Taille" value={size ? `${size} mm` : undefined} />
-          <div className="mt-3 flex gap-2.5">
+          <FilterLabel name={t.collection.size} value={size ? `${size} mm` : undefined} />
+          <div className="mt-3 flex flex-wrap gap-2.5">
             {sizes.map((item) => (
               <button
                 key={item}
                 type="button"
-                aria-label={`${item} millimètres`}
+                aria-label={`${item} ${t.collection.millimetres}`}
                 aria-pressed={size === item}
                 onClick={() => setSize(size === item ? null : item)}
                 className={[
@@ -149,13 +153,13 @@ export default function Collection({ models }: { models: ShopModel[] }) {
         </div>
 
         <div>
-          <FilterLabel name="Bracelet" value={material ?? undefined} />
-          <div className="mt-3 flex gap-2.5">
+          <FilterLabel name={t.collection.strap} value={material ? matiereLabels[material][lang] : undefined} />
+          <div className="mt-3 flex flex-wrap gap-2.5">
             {materials.map((item) => (
-              <Tip key={item.id} label={item.id}>
+              <Tip key={item.id} label={matiereLabels[item.id][lang]}>
                 <button
                   type="button"
-                  aria-label={item.id}
+                  aria-label={matiereLabels[item.id][lang]}
                   aria-pressed={material === item.id}
                   onClick={() => setMaterial(material === item.id ? null : item.id)}
                   className="flex size-10 items-center justify-center rounded-full bg-white/10"
@@ -180,15 +184,15 @@ export default function Collection({ models }: { models: ShopModel[] }) {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Nom ou référence"
-              aria-label="Rechercher une montre"
+              placeholder={t.collection.searchPlaceholder}
+              aria-label={t.collection.searchLabel}
               className="field w-48 rounded-full"
             />
           ) : null}
-          <Tip label="Rechercher" side="bottom-end">
+          <Tip label={t.collection.search} side="bottom-end">
             <button
               type="button"
-              aria-label="Rechercher"
+              aria-label={t.collection.search}
               aria-expanded={searching}
               onClick={() => setSearching((value) => !value)}
               className="flex size-10 items-center justify-center rounded-full bg-white/10"
@@ -204,19 +208,14 @@ export default function Collection({ models }: { models: ShopModel[] }) {
         if (rows.length === 0) return null;
         return (
           <section key={family.id} className="mt-14">
-            <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label}</h2>
+            <h2 className="matrix text-[clamp(2.25rem,4vw,3.25rem)]">{family.label[lang]}</h2>
             {family.id === "parcours" ? <ParcoursBanner /> : null}
             <CardRow models={rows} />
           </section>
         );
       })}
 
-      {visible.length === 0 ? (
-        <p className="copy mt-14">
-          Aucune montre ne correspond à ces filtres. Retirez un filtre pour voir
-          plus de modèles.
-        </p>
-      ) : null}
+      {visible.length === 0 ? <p className="copy mt-14">{t.collection.noResult}</p> : null}
     </main>
   );
 }

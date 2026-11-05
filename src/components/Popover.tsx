@@ -7,7 +7,8 @@ type Props = {
   trigger: React.ReactNode;
   triggerClassName?: string;
   align?: "left" | "right";
-  children: React.ReactNode;
+  /** Reçoit `close` quand le contenu doit pouvoir fermer le panneau. */
+  children: React.ReactNode | ((close: () => void) => React.ReactNode);
 };
 
 /** Petit panneau ouvert au clic, fermé par Échap ou un clic extérieur. */
@@ -51,11 +52,11 @@ export default function Popover({
       {open ? (
         <div
           className={[
-            "absolute top-[calc(100%+0.625rem)] z-50 w-64 rounded-2xl border border-line bg-card p-4 text-sm leading-relaxed shadow-2xl",
+            "absolute top-[calc(100%+0.625rem)] z-50 w-[min(16rem,calc(100vw-2.5rem))] rounded-2xl border border-line bg-card p-4 text-sm leading-relaxed shadow-2xl",
             align === "right" ? "right-0" : "left-0",
           ].join(" ")}
         >
-          {children}
+          {typeof children === "function" ? children(() => setOpen(false)) : children}
         </div>
       ) : null}
     </div>

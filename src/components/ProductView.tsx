@@ -15,13 +15,13 @@ import Tip from "@/components/Tip";
 import {
   colorways,
   descriptif,
-  euros,
   specs,
   strapSizes,
 } from "@/content/catalogue";
-import { precontractuel } from "@/content/legal";
+import { legalContent } from "@/content/legal";
 import { livraison } from "@/content/vendeur";
 import type { ShopModel } from "@/lib/catalogue.server";
+import { usePrice, useSettings, useT } from "@/lib/settings";
 import { useCart, useFavorites } from "@/lib/stores";
 
 export default function ProductView({
@@ -32,6 +32,9 @@ export default function ProductView({
   models: ShopModel[];
 }) {
   const router = useRouter();
+  const t = useT();
+  const { lang } = useSettings();
+  const price = usePrice();
   const { add } = useCart();
   const { slugs, toggle } = useFavorites();
   const [strapSize, setStrapSize] = useState<string>(strapSizes[1]);
@@ -39,10 +42,12 @@ export default function ProductView({
 
   const available = model.stock > 0;
   const isFavorite = slugs.includes(model.slug);
+  const legal = legalContent(lang);
+  const delay = lang === "en" ? legal.delayText : livraison.delai;
 
-  /** Les déclinaisons de cette montre : elles passent par le choix du coloris. */
-  const colors = colorways(model).filter((color) =>
-    models.some((item) => item.slug === color.slug),
+  /** Les variantes de ce modèle. */
+  const variants = colorways(model).filter((variant) =>
+    models.some((item) => item.slug === variant.slug),
   );
 
   /** D'autres montres de la même famille, sans refaire le tour de la gamme. */
@@ -50,11 +55,11 @@ export default function ProductView({
     .filter(
       (item) =>
         item.family === model.family &&
-        !colors.some((color) => color.slug === item.slug),
+        !variants.some((variant) => variant.slug === item.slug),
     )
     .slice(0, 3);
 
-  const text = descriptif(model);
+  const text = descriptif(model, lang);
   const firstStop = text.indexOf(". ") + 1;
 
   const buy = () => {
@@ -75,17 +80,17 @@ export default function ProductView({
           <Surface />
           <div className="relative">
             <Header active="montres" />
-            <main className="pad relative flex flex-col pt-8 pb-8 lg:min-h-[calc(100svh-15rem)] lg:pt-10">
-              <div className="flex items-center justify-between gap-4">
+            <main className="pad relative flex flex-col pt-6 pb-8 lg:min-h-[calc(100svh-15rem)] lg:pt-10">
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                 <SeriesBadge serie={model.serie} />
                 <p className="label text-accent">
-                  {available ? "En stock" : "Épuisé"}
+                  {available ? t.common.inStock : t.common.soldOut}
                 </p>
               </div>
 
-              <div className="relative z-10 mt-8 lg:mt-[clamp(1.5rem,6vh,4rem)]">
+              <div className="relative z-10 mt-6 lg:mt-[clamp(1.5rem,6vh,4rem)]">
                 <p className="label text-muted">{model.ref}</p>
-                <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.75rem,5vw,4.5rem)]">
+                <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)]">
                   {model.name}
                 </h1>
               </div>
@@ -100,36 +105,44 @@ export default function ProductView({
               </div>
 
               <div className="relative z-10 flex flex-wrap items-end justify-between gap-6 lg:mt-auto">
-                <div className="lg:mt-8">
+                <div className="lg:mt-8 lg:max-w-[17rem]">
                   <p className="text-lg font-semibold text-accent">
-                    {euros(model.priceCents)} TTC
+                    {price.isUsd
+                      ? price.usd(model.priceCents)
+                      : `${price.eur(model.priceCents)} ${t.common.vat}`}
                   </p>
+                  {price.isUsd ? (
+                    <p className="mt-1 text-xs text-ink">
+                      {t.product.usdNote} {price.eur(model.priceCents)} {t.common.vat}.
+                    </p>
+                  ) : null}
                   <p className="mt-1 text-xs text-muted">
-                    Livraison incluse, sous {livraison.delai}
+                    {t.product.deliveryIncluded} {delay}
                   </p>
 
                   <div className="mt-4">
                     <p className="label text-muted">
-                      Coloris <span className="ml-1 text-ink">{model.coloris}</span>
+                      {model.groupe ? t.product.variant : t.product.color}{" "}
+                      <span className="ml-1 text-ink">{model.coloris[lang]}</span>
                     </p>
-                    <div role="group" aria-label="Choisir un coloris" className="mt-2 flex gap-2.5">
-                      {colors.map((color) => (
-                        <Tip key={color.slug} label={color.coloris}>
+                    <div role="group" aria-label={t.product.chooseVariant} className="mt-2 flex flex-wrap gap-2.5">
+                      {variants.map((variant) => (
+                        <Tip key={variant.slug} label={variant.coloris[lang]}>
                           <Link
-                            href={`/montres/${color.slug}`}
+                            href={`/montres/${variant.slug}`}
                             scroll={false}
-                            aria-label={`Coloris ${color.coloris}`}
-                            aria-current={color.slug === model.slug ? "true" : undefined}
+                            aria-label={`${t.product.variant} ${variant.coloris[lang]}`}
+                            aria-current={variant.slug === model.slug ? "true" : undefined}
                             className={[
-                              "flex size-8 items-center justify-center rounded-full border transition-colors",
-                              color.slug === model.slug
+                              "flex size-9 items-center justify-center rounded-full border transition-colors",
+                              variant.slug === model.slug
                                 ? "border-[var(--accent)]"
                                 : "border-transparent hover:border-muted",
                             ].join(" ")}
                           >
                             <span
                               className="size-6 rounded-full ring-1 ring-white/25"
-                              style={{ backgroundColor: color.pastille }}
+                              style={{ backgroundColor: variant.pastille }}
                             />
                           </Link>
                         </Tip>
@@ -138,7 +151,7 @@ export default function ProductView({
                   </div>
 
                   <label className="mt-4 block w-44">
-                    <span className="label text-muted">Taille du bracelet</span>
+                    <span className="label text-muted">{t.product.strapSize}</span>
                     <select
                       className="field mt-1.5"
                       value={strapSize}
@@ -157,32 +170,32 @@ export default function ProductView({
                     onClick={buy}
                     className="button mt-4"
                   >
-                    {available ? "Acheter" : "Épuisé"}
+                    {available ? t.common.buy : t.common.soldOut}
                   </button>
                 </div>
 
                 <div className="flex gap-5 lg:flex-col">
-                  <Tip label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"} side="left">
+                  <Tip label={isFavorite ? t.product.removeFavorite : t.product.addFavorite} side="left">
                     <button
                       type="button"
-                      aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                      aria-label={isFavorite ? t.product.removeFavorite : t.product.addFavorite}
                       aria-pressed={isFavorite}
                       onClick={() => toggle(model.slug)}
                     >
                       <HeartIcon filled={isFavorite} />
                     </button>
                   </Tip>
-                  <Tip label={shared ? "Lien copié" : "Copier le lien"} side="left">
+                  <Tip label={shared ? t.product.linkCopied : t.product.copyLink} side="left">
                     <button
                       type="button"
-                      aria-label={shared ? "Lien copié" : "Copier le lien"}
+                      aria-label={shared ? t.product.linkCopied : t.product.copyLink}
                       onClick={share}
                     >
                       <ShareIcon />
                     </button>
                   </Tip>
-                  <Tip label="Lire le descriptif" side="left">
-                    <a href="#fiche" aria-label="Lire le descriptif">
+                  <Tip label={t.product.readDescription} side="left">
+                    <a href="#fiche" aria-label={t.product.readDescription}>
                       <DocumentIcon />
                     </a>
                   </Tip>
@@ -192,7 +205,7 @@ export default function ProductView({
           </div>
         </section>
 
-        <section className="surface pad relative -mt-8 grid gap-8 rounded-b-panel pt-16 pb-9 md:grid-cols-[1fr_1fr]">
+        <section className="surface pad relative -mt-8 grid gap-8 rounded-b-panel pt-16 pb-9 lg:grid-cols-2">
           <div className="fade-out max-h-32 overflow-hidden">
             <p className="label">
               {model.name} <span className="ml-1 text-muted">{model.ref}</span>
@@ -204,22 +217,22 @@ export default function ProductView({
           </div>
 
           {suggestions.length > 0 ? (
-            <div className="flex justify-between gap-6">
+            <div className="flex flex-wrap justify-between gap-6">
               <div>
                 <p className="label">
-                  Même <span className="text-muted">famille</span>
+                  {t.product.sameFamily[0]} <span className="text-muted">{t.product.sameFamily[1]}</span>
                 </p>
                 <ul className="mt-4 space-y-1.5">
                   {suggestions.map((item) => (
                     <li key={item.slug}>
                       <Link className="label text-muted hover:text-ink" href={`/montres/${item.slug}`}>
-                        {item.ref}
+                        {item.name}
                       </Link>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-3 sm:gap-4">
                 {suggestions.map((item) => (
                   <Link
                     key={item.slug}
@@ -237,15 +250,13 @@ export default function ProductView({
       </div>
 
       <div className="pad grid gap-12 py-16 lg:grid-cols-2 lg:gap-20">
-        <section id="fiche" className="scroll-mt-8">
-          <h2 className="matrix text-4xl">Descriptif</h2>
+        <section id="fiche" className="min-w-0 scroll-mt-8">
+          <h2 className="matrix text-4xl">{t.product.description}</h2>
           <p className="copy mt-5">{text}</p>
-          <p className="mt-4 text-sm font-semibold">
-            Ce descriptif fait foi : les visuels sont non contractuels.
-          </p>
+          <p className="mt-4 text-sm font-semibold">{t.product.binding}</p>
           <dl className="mt-7 border-t border-line">
-            {specs(model).map(([label, value]) => (
-              <div key={label} className="grid grid-cols-[9rem_1fr] gap-4 border-b border-line py-3 text-sm">
+            {specs(model, lang).map(([label, value]) => (
+              <div key={label} className="grid gap-1 border-b border-line py-3 text-sm sm:grid-cols-[9rem_1fr] sm:gap-4">
                 <dt className="text-muted">{label}</dt>
                 <dd>{value}</dd>
               </div>
@@ -253,10 +264,10 @@ export default function ProductView({
           </dl>
         </section>
 
-        <section>
-          <h2 className="matrix text-4xl">Avant de commander</h2>
+        <section className="min-w-0">
+          <h2 className="matrix text-4xl">{t.product.beforeOrder}</h2>
           <dl className="mt-5 space-y-5">
-            {precontractuel(model.priceCents).map(([label, value]) => (
+            {legal.precontractuel(model.priceCents).map(([label, value]) => (
               <div key={label}>
                 <dt className="label">{label}</dt>
                 <dd className="copy mt-1">{value}</dd>
@@ -264,14 +275,13 @@ export default function ProductView({
             ))}
           </dl>
           <p className="copy mt-6">
-            Offre valable tant qu&apos;elle est en ligne, dans la limite des stocks.
-            Voir les{" "}
+            {t.product.offer}{" "}
             <Link className="link" href="/cgv">
-              conditions générales de vente
+              {t.product.terms}
             </Link>{" "}
-            et le{" "}
+            {t.product.and}{" "}
             <Link className="link" href="/garantie#retractation">
-              formulaire de rétractation
+              {t.product.withdrawalForm}
             </Link>
             .
           </p>

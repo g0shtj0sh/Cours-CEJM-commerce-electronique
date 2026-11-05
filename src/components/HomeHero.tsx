@@ -13,6 +13,7 @@ import {
   ambientStyle,
 } from "@/components/Shared";
 import type { ShopModel } from "@/lib/catalogue.server";
+import { useT } from "@/lib/settings";
 
 /** Accueil : un carrousel dont l'ambiance suit le modèle affiché. */
 export default function HomeHero({
@@ -22,6 +23,7 @@ export default function HomeHero({
   models: ShopModel[];
   children: React.ReactNode;
 }) {
+  const t = useT();
   const [index, setIndex] = useState(0);
   const model = models[index];
   const previous = models[(index - 1 + models.length) % models.length];
@@ -45,17 +47,17 @@ export default function HomeHero({
       <div className="relative">
         <Header />
 
-        <main className="pad relative flex flex-col pt-8 pb-8 lg:min-h-[calc(100svh-12.5rem)] lg:pt-10">
-          <div className="flex items-center justify-between gap-4">
+        <main className="pad relative flex flex-col pt-6 pb-8 lg:min-h-[calc(100svh-12.5rem)] lg:pt-10">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <SeriesBadge serie={model.serie} />
             <p className="label text-accent">
-              {model.stock > 0 ? "Disponible" : "Épuisé"}
+              {model.stock > 0 ? t.common.available : t.common.soldOut}
             </p>
           </div>
 
-          <div className="relative z-10 mt-8 lg:mt-[clamp(2rem,9vh,5.5rem)]">
+          <div className="relative z-10 mt-6 lg:mt-[clamp(2rem,9vh,5.5rem)]">
             <p className="label text-muted">{model.ref}</p>
-            <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.75rem,5vw,4.5rem)]">
+            <h1 className="matrix mt-4 max-w-[9ch] text-[clamp(2.5rem,5vw,4.5rem)]">
               {model.name}
             </h1>
           </div>
@@ -82,19 +84,20 @@ export default function HomeHero({
 
           <div className="relative z-10 flex items-end justify-between gap-6 lg:mt-7 lg:flex-1 lg:items-start">
             <Link href={`/montres/${model.slug}`} className="button">
-              Découvrir
+              {t.common.discover}
             </Link>
 
             {model.hasScene ? (
               <Link
                 href={`/montres/${model.slug}`}
-                aria-label={`Voir ${model.name} de près`}
+                aria-label={`${t.common.seeCloser} : ${model.name}`}
                 className="relative hidden aspect-[3/2] w-[clamp(9rem,14vw,12.5rem)] overflow-hidden rounded-2xl lg:block"
               >
                 <Image
                   src={`/images/${model.slug}-scene.webp`}
                   alt=""
                   fill
+                  decoding="sync"
                   sizes="14vw"
                   className="object-cover"
                 />

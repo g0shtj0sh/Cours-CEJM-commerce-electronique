@@ -3,30 +3,27 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Popover from "@/components/Popover";
+import { SettingsPills } from "@/components/Settings";
 import SiteMenu from "@/components/SiteMenu";
 import Tip from "@/components/Tip";
-import {
-  ArrowLeftIcon,
-  BagIcon,
-  ChevronIcon,
-  HeartIcon,
-  UserIcon,
-} from "@/components/Icons";
+import { ArrowLeftIcon, BagIcon, HeartIcon, UserIcon } from "@/components/Icons";
+import { useT } from "@/lib/settings";
 import { useCart, useFavorites } from "@/lib/stores";
 
-const nav = [
-  { id: "montres", href: "/montres", label: "Montres" },
-  { id: "garantie", href: "/garantie", label: "Garantie & service" },
-  { id: "marque", href: "/marque", label: "La marque" },
-] as const;
-
-type Active = (typeof nav)[number]["id"];
+type Active = "montres" | "garantie" | "marque";
 
 export default function Header({ active }: { active?: Active }) {
+  const t = useT();
   const { lines } = useCart();
   const { slugs } = useFavorites();
   const pathname = usePathname();
   const router = useRouter();
+
+  const nav = [
+    { id: "montres", href: "/montres", label: t.nav.watches },
+    { id: "garantie", href: "/garantie", label: t.nav.warranty },
+    { id: "marque", href: "/marque", label: t.nav.brand },
+  ] as const;
 
   const goBack = () => {
     if (window.history.length > 1) router.back();
@@ -34,13 +31,13 @@ export default function Header({ active }: { active?: Active }) {
   };
 
   return (
-    <header className="pad relative z-40 flex items-center justify-between gap-4 pt-8 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:pt-11">
-      <div className="flex items-center gap-4 lg:gap-6">
+    <header className="pad relative z-40 flex items-center justify-between gap-3 pt-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:pt-11">
+      <div className="flex min-w-0 items-center gap-2.5 sm:gap-4 lg:gap-6">
         {pathname !== "/" ? (
-          <Tip label="Retour">
+          <Tip label={t.header.back}>
             <button
               type="button"
-              aria-label="Revenir à la page précédente"
+              aria-label={t.header.backLabel}
               onClick={goBack}
               className="flex size-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
             >
@@ -48,22 +45,22 @@ export default function Header({ active }: { active?: Active }) {
             </button>
           </Tip>
         ) : null}
-        <Link href="/" className="matrix flex items-start text-[1.75rem]">
+        <Link href="/" className="matrix flex items-start text-2xl sm:text-[1.75rem]">
           POINT
           <span className="mt-0.5 ml-0.5 font-sans text-[0.625rem] font-semibold">®</span>
         </Link>
         <SiteMenu />
       </div>
 
-      <nav aria-label="Navigation principale" className="hidden lg:block">
-        <ul className="flex items-center gap-10">
+      <nav aria-label={t.nav.mainNav} className="hidden lg:block">
+        <ul className="flex items-center gap-7 xl:gap-10">
           {nav.map((item) => (
             <li key={item.id}>
               <Link
                 href={item.href}
                 aria-current={active === item.id ? "page" : undefined}
                 className={[
-                  "label transition-colors hover:text-ink",
+                  "label whitespace-nowrap transition-colors hover:text-ink",
                   active === item.id ? "text-ink" : "text-muted",
                 ].join(" ")}
               >
@@ -74,47 +71,39 @@ export default function Header({ active }: { active?: Active }) {
         </ul>
       </nav>
 
-      <div className="flex items-center justify-end gap-6">
-        <div className="hidden items-center gap-2.5 xl:flex">
-          <Popover
-            label="Devise"
-            trigger={
-              <span className="pill label">
-                EUR <ChevronIcon />
-              </span>
-            }
-          >
-            Les prix sont affichés en euros, toutes taxes comprises.
-          </Popover>
-          <Popover
-            label="Langue et pays"
-            trigger={
-              <span className="pill label">
-                FR <ChevronIcon />
-              </span>
-            }
-          >
-            Site en français, livraison en France métropolitaine : le droit
-            français de la consommation s&apos;applique.
-          </Popover>
+      <div className="flex items-center justify-end gap-3.5 sm:gap-6">
+        <div className="hidden items-center gap-2.5 md:flex lg:hidden xl:flex">
+          <SettingsPills />
         </div>
 
-        <Tip label="Mes favoris">
-          <Link href="/favoris" aria-label={`Favoris : ${slugs.length}`} className="relative flex">
+        <Tip label={t.header.favorites}>
+          <Link
+            href="/favoris"
+            aria-label={`${t.header.favoritesCount} : ${slugs.length}`}
+            className="relative flex"
+          >
             <HeartIcon filled={slugs.length > 0} />
             {slugs.length > 0 ? <Count value={slugs.length} /> : null}
           </Link>
         </Tip>
 
-        <Tip label="Mon compte">
-          <Popover label="Compte" align="right" triggerClassName="flex" trigger={<UserIcon />}>
-            Pas besoin de compte : vous commandez directement, avec votre adresse
-            de livraison.
+        <Tip label={t.header.account}>
+          <Popover
+            label={t.header.accountLabel}
+            align="right"
+            triggerClassName="flex"
+            trigger={<UserIcon />}
+          >
+            {t.header.accountText}
           </Popover>
         </Tip>
 
-        <Tip label="Mon panier" side="bottom-end">
-          <Link href="/panier" aria-label={`Panier : ${lines.length} article(s)`} className="relative flex">
+        <Tip label={t.header.cart} side="bottom-end">
+          <Link
+            href="/panier"
+            aria-label={`${t.header.cartCount} : ${lines.length}`}
+            className="relative flex"
+          >
             <BagIcon />
             {lines.length > 0 ? <Count value={lines.length} /> : null}
           </Link>
