@@ -9,9 +9,9 @@ export default function MarquePage() {
     <LegalPage title="Marque et brevet" active="marque">
       <LegalSection title="Pourquoi POINT">
         <p>
-          Un point est la plus petite unité de nos écrans : 1 024 d&apos;entre eux
-          suffisent à donner l&apos;heure. Nos montres portent un nom simple et un
-          numéro de génération, entre parenthèses : Carré (1), Octo (1), Rond (1).
+          Un point est la plus petite unité de nos écrans : quelques centaines
+          d&apos;entre eux suffisent à donner l&apos;heure. Nos montres portent un nom simple et un
+          numéro de génération, entre parenthèses : Carré (1), Octo (1), Rond (1), Ligne (1).
         </p>
       </LegalSection>
 

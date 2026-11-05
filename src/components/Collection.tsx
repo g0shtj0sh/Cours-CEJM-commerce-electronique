@@ -4,7 +4,14 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { SearchIcon } from "@/components/Icons";
 import { SeriesBadge, WatchImage, ambientStyle } from "@/components/Shared";
-import { euros, families, type FamilyId, type Model } from "@/content/catalogue";
+import {
+  catalogue,
+  euros,
+  families,
+  tailleOf,
+  type FamilyId,
+  type Model,
+} from "@/content/catalogue";
 import type { ShopModel } from "@/lib/catalogue.server";
 import { useFavorites } from "@/lib/stores";
 
@@ -12,9 +19,10 @@ const shapes: { id: FamilyId; label: string; path: React.ReactNode }[] = [
   { id: "carre", label: "Carré", path: <rect x="7" y="7" width="10" height="10" rx="2.5" /> },
   { id: "octo", label: "Octogonal", path: <path d="M9.5 6h5L18 9.5v5L14.5 18h-5L6 14.5v-5L9.5 6Z" /> },
   { id: "rond", label: "Rond", path: <circle cx="12" cy="12" r="6" /> },
+  { id: "ligne", label: "Allongé", path: <rect x="9" y="5.5" width="6" height="13" rx="3" /> },
 ];
 
-const sizes = [40, 42, 44];
+const sizes = [...new Set(catalogue.map(tailleOf))].sort((a, b) => a - b);
 
 const materials: { id: Model["matiere"]; color: string }[] = [
   { id: "Fluoroélastomère", color: "#e6e1da" },
@@ -87,10 +95,9 @@ export default function Collection({ models }: { models: ShopModel[] }) {
   const visible = useMemo(() => {
     const query = search.trim().toLowerCase();
     return models.filter((model) => {
-      const family = families.find((item) => item.id === model.family);
       return (
         (!shape || model.family === shape) &&
-        (!size || family?.tailleMm === size) &&
+        (!size || tailleOf(model) === size) &&
         (!material || model.matiere === material) &&
         (!query || `${model.name} ${model.ref}`.toLowerCase().includes(query))
       );

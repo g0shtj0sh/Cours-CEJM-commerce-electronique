@@ -1,7 +1,7 @@
 # Prompts pour générer les images POINT avec ChatGPT
 
 Dans ChatGPT, joins **ton image de la page sombre** et **tes images de montres**
-(Carré blanche, Carré noire, Octo olive, Rond maille, Rond cuivre), puis colle
+(toutes celles que tu as déjà), puis colle
 le bloc 1. Envoie ensuite les blocs 2, 3 et 4 un par un, dans la même conversation.
 
 Dépose chaque fichier dans `public/images/`, avec exactement le nom indiqué.
@@ -37,7 +37,7 @@ Confirme que tu as compris. Je t'envoie ensuite les images à générer.
 
 ---
 
-## Bloc 2 — Mes 5 montres, avec le bon nom sur l'écran
+## Bloc 2 — Mes 5 premières montres, avec le bon nom sur l'écran
 
 Sur ton site, j'ai déjà remplacé « NODAL » par « POINT » et détouré tes images :
 ce bloc sert seulement à obtenir une version plus propre et plus nette.
@@ -56,22 +56,16 @@ Génère une image à la fois.
 
 ---
 
-## Bloc 3 — Les 4 nouveaux modèles
+## Bloc 3 — Les 2 modèles qui manquent
 
 ```text
-Crée maintenant 4 nouveaux modèles de la gamme, une image à la fois, en gardant
+Crée maintenant 2 nouveaux modèles de la gamme, une image à la fois, en gardant
 exactement le même angle et le même éclairage que leur famille.
 
 1. carre-cobalt.png : la montre carrée, boîtier en polycarbonate bleu translucide,
    bracelet côtelé bleu nuit.
-2. octo-noir.png : la montre octogonale, boîtier noir fumé, vis et cornes en titane
-   noirci, bracelet en nylon tissé noir.
-3. octo-sable.png : la montre octogonale, boîtier fumé, bracelet en nylon tissé
+2. octo-sable.png : la montre octogonale, boîtier fumé, bracelet en nylon tissé
    couleur sable.
-4. rond-nuit.png : la même forme que rond-cuivre, avec un boîtier en titane noirci,
-   une lunette en titane bleui et un bracelet à maillons noirs. Écran noir avec
-   aiguilles et index en points, comme rond-cuivre, avec des accents bleu clair
-   à la place du cuivre.
 ```
 
 ---
@@ -93,9 +87,7 @@ Aucun texte ajouté, aucun visage reconnaissable, aucune marque sauf POINT sur l
 3. editorial-service.png : vue d'atelier, mains gantées qui ouvrent une montre POINT
    avec un petit tournevis, outils d'horloger flous, fond très sombre.
 4. carre-cobalt-scene.png : la montre Carré cobalt posée sur une pierre noire, 3:2.
-5. octo-noir-scene.png : la montre Octo noire posée sur une pierre noire, 3:2.
-6. octo-sable-scene.png : la montre Octo sable posée sur une pierre noire, 3:2.
-7. rond-nuit-scene.png : la montre Rond nuit posée sur une pierre noire, 3:2.
+5. octo-sable-scene.png : la montre Octo sable posée sur une pierre noire, 3:2.
 ```
 
 ---
@@ -113,7 +105,7 @@ Aucun texte ajouté, aucun visage reconnaissable, aucune marque sauf POINT sur l
 
 | Dossier `public/images/` | Rôle |
 | --- | --- |
-| `carre-clair.webp`, `carre-noir.webp`, `octo-olive.webp`, `rond-maille.webp`, `rond-cuivre.webp` | Déjà en place, à remplacer si tu veux plus net |
-| `carre-cobalt.webp`, `octo-noir.webp`, `octo-sable.webp`, `rond-nuit.webp` | Nouveaux modèles : les met en vente |
+| `carre-clair.webp`, `carre-noir.webp`, `octo-olive.webp`, `octo-orange.webp`, `rond-maille.webp`, `rond-cuivre.webp`, `rond-nuit.webp`, `ligne-cobalt.webp`, `ligne-cristal.webp` | Déjà en place, à remplacer si tu veux plus net |
+| `carre-cobalt.webp`, `octo-sable.webp` | Modèles restants : les met en vente |
 | `editorial-marque.webp`, `editorial-gamme.webp`, `editorial-service.webp` | Les 3 cartes de l'accueil |
-| `carre-cobalt-scene.webp`, `octo-noir-scene.webp`, `octo-sable-scene.webp`, `rond-nuit-scene.webp` | Vignette de l'accueil |
+| `carre-cobalt-scene.webp`, `octo-sable-scene.webp` | Vignette de l'accueil |

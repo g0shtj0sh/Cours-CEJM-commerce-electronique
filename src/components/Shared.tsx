@@ -45,7 +45,7 @@ export function WatchImage({
       fill
       sizes={sizes}
       priority={priority}
-      decoding={priority ? "sync" : "async"}
+      decoding="sync"
       className="object-contain"
     />
   );
@@ -65,7 +65,9 @@ export function Ruler({
     <div className="flex items-center justify-center gap-1.5" role="group" aria-label="Choisir un modèle">
       {Array.from({ length: count }, (_, index) => (
         <div key={index} className="flex items-center gap-1.5">
-          <Ticks bright={index === active} />
+          <span className="hidden items-center sm:flex">
+            <Ticks bright={index === active} />
+          </span>
           <button
             type="button"
             aria-label={`Modèle ${index + 1}`}
@@ -78,7 +80,11 @@ export function Ruler({
           >
             {String(index + 1).padStart(2, "0")}
           </button>
-          {index === active ? <Ticks bright /> : null}
+          {index === active ? (
+            <span className="hidden items-center sm:flex">
+              <Ticks bright />
+            </span>
+          ) : null}
         </div>
       ))}
       <Ticks />

@@ -4,15 +4,17 @@
  *
  * Un modèle n'est mis en vente que si son image existe dans
  * public/images/<slug>.webp. Sinon il apparaît comme « Prochainement ».
+ *
+ * Le descriptif fait foi face aux visuels : chaque modèle doit décrire ce
+ * que montre réellement son image (fonctions, couleurs de l'écran, voyants).
  */
 
-export type FamilyId = "carre" | "octo" | "rond";
+export type FamilyId = "carre" | "octo" | "rond" | "ligne";
 
 export type Family = {
   id: FamilyId;
   label: string;
   forme: string;
-  /** Taille du boîtier, utilisée par le filtre. */
   tailleMm: number;
   boitier: string;
   masse: string;
@@ -51,6 +53,16 @@ export const families: readonly Family[] = [
     etancheite: "5 ATM : douche et nage en surface",
     autonomie: "30 jours en usage courant",
   },
+  {
+    id: "ligne",
+    label: "Ligne (1)",
+    forme: "Allongé",
+    tailleMm: 36,
+    boitier: "36 × 50 × 10 mm",
+    masse: "34 g, bracelet compris",
+    etancheite: "5 ATM : douche et nage en surface",
+    autonomie: "14 jours en usage courant",
+  },
 ];
 
 export type Model = {
@@ -69,13 +81,23 @@ export type Model = {
   /** Sert au filtre de la collection. */
   matiere: "Fluoroélastomère" | "Nylon" | "Acier" | "Titane";
   fermoir: string;
+  /** Ce que montre l'écran, couleurs comprises. */
   affichage: string;
+  /** Phrase propre au modèle, reprise dans le descriptif. */
+  particularite: string;
+  /** Fonction ajoutée à la liste commune, si le modèle en a une. */
+  fonctionPlus?: string;
+  /** Dimensions propres au modèle, si elles diffèrent de sa famille. */
+  boitier?: string;
+  masse?: string;
+  tailleMm?: number;
   /** Couleur d'ambiance de la page, en composantes RVB. */
   ambient: string;
   accent: string;
 };
 
-const CHIFFRES = "Chiffres en points lumineux";
+const CHIFFRES = "Chiffres en points blancs";
+const VOYANTS = "Une colonne de voyants latéraux signale le niveau de charge.";
 
 export const catalogue: readonly Model[] = [
   {
@@ -91,6 +113,7 @@ export const catalogue: readonly Model[] = [
     matiere: "Fluoroélastomère",
     fermoir: "Boucle à ardillon",
     affichage: CHIFFRES,
+    particularite: VOYANTS,
     ambient: "150 132 112",
     accent: "#e3d3bf",
   },
@@ -107,6 +130,7 @@ export const catalogue: readonly Model[] = [
     matiere: "Fluoroélastomère",
     fermoir: "Boucle à ardillon",
     affichage: CHIFFRES,
+    particularite: VOYANTS,
     ambient: "134 72 32",
     accent: "#ff9a52",
   },
@@ -123,6 +147,7 @@ export const catalogue: readonly Model[] = [
     matiere: "Fluoroélastomère",
     fermoir: "Boucle à ardillon",
     affichage: CHIFFRES,
+    particularite: VOYANTS,
     ambient: "20 88 124",
     accent: "#58bdf0",
   },
@@ -139,24 +164,27 @@ export const catalogue: readonly Model[] = [
     matiere: "Nylon",
     fermoir: "Passant et boucle en titane",
     affichage: CHIFFRES,
+    particularite: VOYANTS,
     ambient: "72 90 46",
     accent: "#bfd08c",
   },
   {
-    slug: "octo-noir",
+    slug: "octo-orange",
     family: "octo",
-    name: "Octo (1) Noir",
-    ref: "PT-O1-NR",
-    priceCents: 29900,
+    name: "Octo (1) Orange",
+    ref: "PT-O1-OR",
+    priceCents: 32900,
     serie: 300,
-    stock: 88,
-    boitierMatiere: "Polycarbonate noir fumé, cornes et vis en titane noirci",
-    bracelet: "Nylon tissé noir",
-    matiere: "Nylon",
-    fermoir: "Passant et boucle en titane noirci",
-    affichage: CHIFFRES,
-    ambient: "74 74 84",
-    accent: "#c9c9d6",
+    stock: 143,
+    boitierMatiere: "Titane brut à facettes, vis apparentes",
+    bracelet: "Fluoroélastomère orange",
+    matiere: "Fluoroélastomère",
+    fermoir: "Boucle à ardillon en titane",
+    affichage: "Chiffres en points blancs, boussole en points blancs et orange",
+    particularite: "Une boussole s'affiche sous l'heure.",
+    fonctionPlus: "boussole",
+    ambient: "150 66 20",
+    accent: "#ff8f4a",
   },
   {
     slug: "octo-sable",
@@ -171,6 +199,7 @@ export const catalogue: readonly Model[] = [
     matiere: "Nylon",
     fermoir: "Passant et boucle en titane",
     affichage: CHIFFRES,
+    particularite: VOYANTS,
     ambient: "134 108 70",
     accent: "#e2c592",
   },
@@ -187,6 +216,7 @@ export const catalogue: readonly Model[] = [
     matiere: "Acier",
     fermoir: "Fermoir coulissant magnétique",
     affichage: CHIFFRES,
+    particularite: VOYANTS,
     ambient: "96 104 118",
     accent: "#c4cedb",
   },
@@ -202,7 +232,8 @@ export const catalogue: readonly Model[] = [
     bracelet: "Maillons en titane brossé",
     matiere: "Titane",
     fermoir: "Boucle déployante",
-    affichage: "Aiguilles et index en points lumineux",
+    affichage: "Aiguilles et index en points blancs et orange",
+    particularite: "Les aiguilles et les index sont dessinés en points lumineux.",
     ambient: "138 84 52",
     accent: "#dca681",
   },
@@ -211,16 +242,57 @@ export const catalogue: readonly Model[] = [
     family: "rond",
     name: "Rond (1) Nuit",
     ref: "PT-R1-NT",
-    priceCents: 44900,
-    serie: 50,
-    stock: 31,
-    boitierMatiere: "Titane noirci, lunette en titane bleui",
-    bracelet: "Maillons en titane noirci",
-    matiere: "Titane",
-    fermoir: "Boucle déployante",
-    affichage: "Aiguilles et index en points lumineux",
-    ambient: "36 58 118",
-    accent: "#8fb0f5",
+    priceCents: 34900,
+    serie: 150,
+    stock: 67,
+    boitierMatiere: "Aluminium anodisé noir",
+    bracelet: "Maille milanaise noire",
+    matiere: "Acier",
+    fermoir: "Fermoir coulissant magnétique",
+    affichage: "Chiffres en points blancs, anneaux en points blancs et bleus",
+    particularite:
+      "Deux anneaux de points entourent l'heure et suivent la progression de la journée et de vos pas.",
+    ambient: "24 78 104",
+    accent: "#7fd4ec",
+  },
+  {
+    slug: "ligne-cobalt",
+    family: "ligne",
+    name: "Ligne (1) Cobalt",
+    ref: "PT-L1-CB",
+    priceCents: 14900,
+    serie: 500,
+    stock: 268,
+    boitierMatiere: "Acier brossé",
+    bracelet: "Nylon tissé bleu cobalt",
+    matiere: "Nylon",
+    fermoir: "Passant coulissant en acier",
+    affichage: "Chiffres en points blancs, courbe en points bleus",
+    particularite:
+      "Un capteur affiche votre rythme cardiaque sous l'heure. Les mesures restent dans la montre. Ce n'est pas un dispositif médical.",
+    fonctionPlus: "rythme cardiaque",
+    boitier: "24 × 56 × 10 mm",
+    masse: "28 g, bracelet compris",
+    tailleMm: 24,
+    ambient: "28 44 130",
+    accent: "#8ea6ff",
+  },
+  {
+    slug: "ligne-cristal",
+    family: "ligne",
+    name: "Ligne (1) Cristal",
+    ref: "PT-L1-CR",
+    priceCents: 19900,
+    serie: 300,
+    stock: 156,
+    boitierMatiere: "Polycarbonate transparent",
+    bracelet: "Fluoroélastomère translucide",
+    matiere: "Fluoroélastomère",
+    fermoir: "Boucle à ardillon en acier",
+    affichage: "Chiffres en points blancs, témoin vert",
+    particularite: "Un témoin vert signale que la montre est chargée.",
+    ambient: "70 100 74",
+    accent: "#b3ec7a",
   },
 ];
 
@@ -232,6 +304,10 @@ export function familyOf(model: Model): Family {
   return families.find((family) => family.id === model.family) ?? families[0];
 }
 
+export function tailleOf(model: Model): number {
+  return model.tailleMm ?? familyOf(model).tailleMm;
+}
+
 export function findModel(slug: string): Model | undefined {
   return catalogue.find((model) => model.slug === slug);
 }
@@ -240,29 +316,31 @@ export function findModel(slug: string): Model | undefined {
 export function descriptif(model: Model): string {
   const family = familyOf(model);
   return (
-    `${model.name} est une montre-bracelet numérique à écran matriciel monochrome. ` +
-    `Son boîtier ${family.forme.toLowerCase()} mesure ${family.boitier}. ` +
+    `${model.name} est une montre-bracelet numérique à écran à matrice de points. ` +
+    `Son boîtier ${family.forme.toLowerCase()} mesure ${model.boitier ?? family.boitier}. ` +
     `Il associe ${model.boitierMatiere.toLowerCase()}, sous un verre saphir plat. ` +
     `La montre indique l'heure et la date, et propose un chronomètre, une alarme et un podomètre. ` +
-    `Quatre voyants latéraux signalent le niveau de charge. ` +
-    `Elle n'a ni microphone, ni haut-parleur, ni GPS, et ne collecte aucune donnée. ` +
+    `${model.particularite} ` +
+    `Elle n'a ni microphone, ni haut-parleur, ni GPS, et ne transmet aucune donnée. ` +
     `Son autonomie est de ${family.autonomie}.`
   );
 }
 
 export function specs(model: Model): [string, string][] {
   const family = familyOf(model);
+  const fonctions = ["Heure", "date", "chronomètre", "alarme", "podomètre"];
+  if (model.fonctionPlus) fonctions.push(model.fonctionPlus);
   return [
-    ["Écran", "Matrice monochrome de 32 × 32 points, verre saphir"],
+    ["Écran", "Matrice de points, verre saphir"],
     ["Affichage", model.affichage],
-    ["Boîtier", `${family.boitier}. ${model.boitierMatiere}`],
-    ["Masse", family.masse],
+    ["Boîtier", `${model.boitier ?? family.boitier}. ${model.boitierMatiere}`],
+    ["Masse", model.masse ?? family.masse],
     ["Bracelet", `${model.bracelet}, tours de poignet de 14 à 21 cm`],
     ["Fermoir", model.fermoir],
     ["Étanchéité", family.etancheite],
     ["Autonomie", family.autonomie],
     ["Recharge", "Base magnétique USB-C incluse, adaptateur secteur non inclus"],
-    ["Fonctions", "Heure, date, chronomètre, alarme, podomètre"],
+    ["Fonctions", fonctions.join(", ")],
     ["Connectivité", "Aucune : la montre ne communique avec aucun appareil"],
     ["Pièces détachées", "Disponibles pendant 7 ans après l'achat"],
   ];

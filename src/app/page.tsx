@@ -12,13 +12,13 @@ export default function Home() {
     {
       href: "/marque",
       title: "Pourquoi POINT",
-      text: "Une marque, un brevet et trois formes déposées.",
+      text: "Une marque, un brevet et quatre formes déposées.",
       image: editorialImage("editorial-marque.webp", "carre-noir-scene.webp"),
     },
     {
       href: "/montres",
       title: "La gamme",
-      text: "Carré, Octo et Rond, en séries limitées.",
+      text: "Carré, Octo, Rond et Ligne, en séries limitées.",
       image: editorialImage("editorial-gamme.webp", "rond-cuivre-scene.webp"),
     },
     {
