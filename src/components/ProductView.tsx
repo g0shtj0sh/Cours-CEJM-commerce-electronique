@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import DotText from "@/components/DotText";
 import { DocumentIcon, HeartIcon, ShareIcon } from "@/components/Icons";
 import Header from "@/components/Header";
@@ -26,17 +27,20 @@ import {
 import { legalContent } from "@/content/legal";
 import { livraison } from "@/content/vendeur";
 import type { ShopModel } from "@/lib/catalogue.server";
-import { markNavigation } from "@/lib/motion";
+import { EASE_OUT, showVariantInAddress } from "@/lib/motion";
 import { usePrice, useSettings, useT } from "@/lib/settings";
 import { useCart, useFavorites } from "@/lib/stores";
 
 export default function ProductView({
-  model,
+  model: initialModel,
   models,
 }: {
   model: ShopModel;
   models: ShopModel[];
 }) {
+  // La variante change sur place : la page n'est pas rechargée, seule l'adresse suit.
+  const [slug, setSlug] = useState(initialModel.slug);
+  const model = models.find((item) => item.slug === slug) ?? initialModel;
   const router = useRouter();
   const t = useT();
   const { lang } = useSettings();
@@ -69,6 +73,22 @@ export default function ProductView({
 
   const text = descriptif(model, lang);
 
+  // Les autres variantes sont chargées d'avance : le changement est immédiat.
+  useEffect(() => {
+    for (const variant of variants) {
+      const image = new window.Image();
+      image.src = `/images/${variant.slug}.webp`;
+    }
+  }, [variants]);
+
+  /** Un clic normal change la variante ; Ctrl ou Maj gardent l'ouverture dans un onglet. */
+  const chooseVariant = (event: React.MouseEvent, variant: { slug: string; name: string }) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    setSlug(variant.slug);
+    showVariantInAddress(variant);
+  };
+
   const buy = () => {
     add(model.slug, strapSize);
     router.push("/panier");
@@ -84,7 +104,18 @@ export default function ProductView({
     <div className="tint" style={ambientStyle(model)}>
       <div className="relative overflow-hidden">
         <section className="relative z-10 overflow-hidden rounded-b-panel bg-night">
-          <Surface />
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={model.slug}
+              className="absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Surface />
+            </motion.div>
+          </AnimatePresence>
           <div className="relative">
             <Header active="montres" />
             <main className="pad relative flex flex-col pt-6 pb-8 lg:min-h-[calc(100svh-15rem)] lg:pt-10">
@@ -109,12 +140,28 @@ export default function ProductView({
               <div className="rise-blur relative mx-auto my-4 aspect-square w-full max-w-md lg:absolute lg:top-[-1rem] lg:bottom-6 lg:left-1/2 lg:my-0 lg:aspect-auto lg:w-[min(46vw,42rem)] lg:max-w-none lg:-translate-x-1/2">
                 <div className="parallax absolute inset-0">
                   <div className="drift absolute inset-0">
-                    <WatchImage
-                      slug={model.slug}
-                      name={model.name}
-                      sizes="(min-width: 1024px) 46vw, 90vw"
-                      priority
-                    />
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div
+                        key={model.slug}
+                        className="absolute inset-0"
+                        initial={{ opacity: 0, filter: "blur(22px)", scale: 0.965 }}
+                        animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+                        exit={{
+                          opacity: 0,
+                          filter: "blur(22px)",
+                          scale: 0.985,
+                          transition: { duration: 0.18, ease: "easeIn" },
+                        }}
+                        transition={{ duration: 0.4, ease: EASE_OUT }}
+                      >
+                        <WatchImage
+                          slug={model.slug}
+                          name={model.name}
+                          sizes="(min-width: 1024px) 46vw, 90vw"
+                          priority
+                        />
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
@@ -152,8 +199,7 @@ export default function ProductView({
                         <Tip key={variant.slug} label={variant.coloris[lang]}>
                           <Link
                             href={`/montres/${variant.slug}`}
-                            scroll={false}
-                            onClick={() => markNavigation("variant")}
+                            onClick={(event) => chooseVariant(event, variant)}
                             aria-label={`${t.product.variant} ${variant.coloris[lang]}`}
                             aria-current={variant.slug === model.slug ? "true" : undefined}
                             className={[

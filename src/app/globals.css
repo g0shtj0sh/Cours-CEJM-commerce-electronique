@@ -218,7 +218,7 @@
     transform: scale(0.97);
   }
 
-  /* Carte produit : lumière et trame de points suivent la souris, la carte s'incline. */
+  /* Carte de montre : lumière et trame de points suivent la souris, la carte s'incline. */
   .card {
     background: linear-gradient(165deg, rgb(var(--ambient) / 0.12), rgb(0 0 0 / 0.72) 62%);
     border-radius: var(--radius-panel);
@@ -259,11 +259,11 @@
     transition: scale 700ms var(--ease-soft);
   }
   @media (hover: hover) {
-    .card:hover {
+    a.card:hover {
       box-shadow: inset 0 0 0 1px rgb(var(--ambient) / 0.7);
     }
-    .card:hover::before,
-    .card:hover::after {
+    a.card:hover::before,
+    a.card:hover::after {
       opacity: 1;
     }
     .card:hover img {
@@ -383,23 +383,6 @@
     animation-play-state: paused;
   }
 
-  /* Halo qui suit la souris, dans le fond de la page : le contenu passe devant. */
-  .cursor-glow {
-    background: radial-gradient(circle, #ff8a3d, transparent 68%);
-    height: 34rem;
-    left: 0;
-    margin: -17rem 0 0 -17rem;
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    transition: opacity 240ms ease;
-    width: 34rem;
-  }
-  html[data-pointer] .cursor-glow {
-    opacity: 0.1;
-  }
-
   /* Les petits boutons répondent au doigt et à la souris. */
   .pin button,
   header a svg,
@@ -454,8 +437,7 @@
   }
   /* Au premier chargement, tout attend la fin du cadran. */
   html:not([data-ready]) .rise,
-  html:not([data-ready]) .rise-blur,
-  html[data-nav="variant"] .rise {
+  html:not([data-ready]) .rise-blur {
     animation: none;
   }
 
@@ -707,7 +689,7 @@
     opacity: 0.32;
   }
 }
-/* Retour arrière et variante : même endroit, simple fondu. */
+/* Retour arrière : simple fondu. */
 html[data-nav]::view-transition-new(.page-enter) {
   animation: page-in 320ms ease-out both;
 }

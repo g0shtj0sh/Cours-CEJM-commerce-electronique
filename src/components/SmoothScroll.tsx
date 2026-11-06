@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { markNavigation } from "@/lib/motion";
+import { markBackNavigation } from "@/lib/motion";
 
 /**
  * Défilement lissé. Désactivé si la personne a demandé moins d'animations :
@@ -14,9 +14,8 @@ export default function SmoothScroll({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    const onPopState = () => markNavigation("back");
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    window.addEventListener("popstate", markBackNavigation);
+    return () => window.removeEventListener("popstate", markBackNavigation);
   }, []);
 
   useEffect(() => {
