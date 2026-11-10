@@ -173,6 +173,13 @@ export default function Checkout() {
                 <span>{t.checkout.newsletter}</span>
               </label>
 
+              <p className="mt-4 text-sm text-muted">
+                {t.checkout.privacy}{" "}
+                <Link className="link" href="/mentions-legales#donnees">
+                  {t.checkout.privacyLink}
+                </Link>
+              </p>
+
               <div className="mt-7 flex flex-wrap gap-3">
                 <button type="submit" className="button">
                   {t.checkout.verify}

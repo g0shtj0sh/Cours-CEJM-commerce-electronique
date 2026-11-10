@@ -178,21 +178,41 @@ export function NoticeContent() {
         </p>
       </LegalSection>
 
-      <LegalSection title={en ? "Personal data" : "Données personnelles"}>
+      <LegalSection id="donnees" title={en ? "Personal data" : "Données personnelles"}>
         <p>
           {en
-            ? `${vendeur.denomination} is the data controller. Your name, address and email are used only to carry out your order. They are kept for the duration of the commercial relationship, then archived for the legal periods.`
-            : `${vendeur.denomination} est responsable du traitement. Vos nom, adresse et e-mail servent uniquement à exécuter votre commande. Ils sont conservés le temps de la relation commerciale, puis archivés pendant les durées légales.`}
+            ? `${vendeur.denomination}, ${vendeur.siege}, is the data controller. The surname, first name, postal address and email you enter at checkout are used to process and deliver your order and, only if you agree, to send you offers by email.`
+            : `${vendeur.denomination}, ${vendeur.siege}, est responsable du traitement. Les nom, prénom, adresse postale et e-mail saisis à la commande servent à traiter et livrer votre commande et, seulement si vous l'acceptez, à vous envoyer des offres par e-mail.`}
         </p>
         <p>
           {en
-            ? "Legal basis: performance of the contract for your order, your consent for offers by email."
-            : "Base légale : l'exécution du contrat pour votre commande, votre consentement pour les offres par e-mail."}
+            ? "Legal basis: performance of the contract for your order (without these details, the order cannot be delivered), your consent for offers by email."
+            : "Base légale : l'exécution du contrat pour votre commande (sans ces informations, elle ne peut pas être livrée), votre consentement pour les offres par e-mail."}
         </p>
         <p>
           {en
-            ? `You can request access, rectification, erasure or portability of your data, and object to its processing, on ${vendeur.telephone} or at ${vendeur.email}. You can also contact the CNIL, the French data protection authority.`
-            : `Vous pouvez demander l'accès, la rectification, l'effacement ou la portabilité de vos données, et vous opposer à leur traitement, au ${vendeur.telephone} ou à ${vendeur.email}. Vous pouvez aussi saisir la CNIL.`}
+            ? `Recipients: only ${vendeur.denomination} staff, the carrier (${livraison.transporteur}) for delivery, and the host. No data is sold or passed on for advertising.`
+            : `Destinataires : seuls le personnel de ${vendeur.denomination}, le transporteur (${livraison.transporteur}) pour la livraison et l'hébergeur y ont accès. Aucune donnée n'est vendue ni cédée à des fins publicitaires.`}
+        </p>
+        <p>
+          {en
+            ? `Transfer outside the EU: the host, ${vendeur.hebergeur.nom}, is based in the United States. Technical data (such as your IP address in server logs) may be processed there, under the EU-US Data Privacy Framework and the European Commission's standard contractual clauses.`
+            : `Transfert hors de l'Union européenne : l'hébergeur, ${vendeur.hebergeur.nom}, est établi aux États-Unis. Des données techniques (comme votre adresse IP dans les journaux du serveur) peuvent y être traitées, dans le cadre du Data Privacy Framework UE-États-Unis et des clauses contractuelles types de la Commission européenne.`}
+        </p>
+        <p>
+          {en
+            ? "Retention: order data for the duration of the commercial relationship, then 10 years for invoices (accounting obligation); data used for offers, 3 years after your last contact with us, or until you unsubscribe."
+            : "Durée de conservation : les données de commande le temps de la relation commerciale, puis 10 ans pour les factures (obligation comptable) ; les données utilisées pour les offres, 3 ans après votre dernier contact avec nous, ou jusqu'à votre désinscription."}
+        </p>
+        <p>
+          {en
+            ? `Your rights: access, rectification, erasure, restriction, portability, objection, and withdrawal of your consent at any time, on ${vendeur.telephone} or at ${vendeur.email}. You can also lodge a complaint with the CNIL (3 place de Fontenoy, 75007 Paris, cnil.fr).`
+            : `Vos droits : accès, rectification, effacement, limitation, portabilité, opposition, et retrait de votre consentement à tout moment, au ${vendeur.telephone} ou à ${vendeur.email}. Vous pouvez aussi adresser une réclamation à la CNIL (3 place de Fontenoy, 75007 Paris, cnil.fr).`}
+        </p>
+        <p>
+          {en
+            ? "No automated decision-making or profiling, and no artificial intelligence system is used on this site."
+            : "Aucune décision automatisée ni aucun profilage, et aucun système d'intelligence artificielle n'est utilisé sur ce site."}
         </p>
       </LegalSection>
 
